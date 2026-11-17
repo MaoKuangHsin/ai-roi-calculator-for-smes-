@@ -1,0 +1,1147 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="color-scheme" content="light dark" />
+<link rel="icon" href="data:," />
+<title>AI ROI Calculator for SMEs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,500;8..60,600;8..60,700&family=Inter:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;600;700&family=Noto+Serif+TC:wght@500;600;700&family=Noto+Serif+JP:wght@500;600;700&display=swap" rel="stylesheet" />
+<style>
+:root{
+  --bg:#F7F9FB; --bg2:#EEF2F6; --surface:#FFFFFF; --surface2:#F1F5F9;
+  --ink:#0F1C2E; --ink-soft:#334155; --muted:#64748B;
+  --navy:#102A43; --navy2:#1B4F72; --navy-deep:#0B1D33;
+  --line:#DCE3EB; --line-soft:#E8EEF3;
+  --accent:#C27803; --accent-ink:#8A5A00; --accent-soft:#FDF3D7;
+  --gold:#E9A426; --gold-bright:#F5B81D; --gold-deep:#9A6B00;
+  --shadow:0 1px 2px rgba(15,35,60,.05),0 4px 16px -6px rgba(15,35,60,.08);
+  --shadow-lg:0 2px 4px rgba(15,35,60,.06),0 16px 36px -16px rgba(15,35,60,.22);
+  --radius:10px;
+  --font-display:"Source Serif 4","Noto Serif TC","Noto Serif JP",Georgia,"Times New Roman",serif;
+  --font-body:"Inter","Noto Sans TC","Noto Sans JP",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#0B1220; --bg2:#0E1626; --surface:#141E30; --surface2:#182639;
+    --ink:#F1F5F9; --ink-soft:#CBD5E1; --muted:#94A3B8;
+    --navy:#A9C2E4; --navy2:#BFD4F2; --navy-deep:#0B1D33;
+    --line:#2A3A52; --line-soft:#223149;
+    --accent:#F0B429; --accent-ink:#FCD34D; --accent-soft:#3A2E12;
+    --gold:#F0B429; --gold-bright:#F5B81D; --gold-deep:#FCD34D;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 4px 16px -6px rgba(0,0,0,.45);
+    --shadow-lg:0 2px 4px rgba(0,0,0,.35),0 16px 36px -16px rgba(0,0,0,.6);
+  }
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto} *{transition:none!important;animation:none!important} }
+body{margin:0;background:linear-gradient(180deg,var(--bg) 0%,var(--bg2) 100%);color:var(--ink);
+  font-family:var(--font-body);font-size:16px;line-height:1.6;letter-spacing:-.008em;font-feature-settings:"kern" 1,"liga" 1,"calt" 1;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+h1,h2,h3,.serif{font-family:var(--font-display);font-weight:600;letter-spacing:-.008em;line-height:1.18;font-optical-sizing:auto;font-feature-settings:"kern" 1,"liga" 1}
+.kpi .v,.sum-row .v,.proc-potential .big,.rank-roi,.rstat .v,.proc-live strong,.input-wrap input{font-variant-numeric:tabular-nums lining-nums}
+button,[role="button"],select,summary,input:not([type="checkbox"]){min-height:2.25rem}
+button{font-family:inherit;cursor:pointer}
+.wrap{max-width:1120px;margin:0 auto;padding:0 20px 72px}
+
+/* ---------- Top bar ---------- */
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 0 4px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px;font-family:var(--font-display);font-weight:600;font-size:1.06rem;color:var(--navy);letter-spacing:-.01em}
+.brand-mark{width:34px;height:34px;border-radius:4px;background:var(--navy);color:var(--gold-bright);border-bottom:3px solid var(--gold);display:grid;place-items:center;flex:none}
+@media (prefers-color-scheme: dark){ .brand-mark{background:#1B4F72;color:#FFFFFF} }
+.brand small{display:block;font-family:var(--font-body);font-weight:500;color:var(--muted);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase}
+.controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.lang-switch{display:flex;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:3px;box-shadow:var(--shadow)}
+.lang-switch button{border:0;background:transparent;color:var(--muted);font-size:.85rem;font-weight:600;padding:6px 14px;border-radius:999px;min-height:2.25rem}
+.lang-switch button.active{background:var(--navy);color:#FFFFFF}
+@media (prefers-color-scheme: dark){ .lang-switch button.active{background:#1B4F72} }
+.cur-wrap{display:flex;align-items:center;gap:7px;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:3px 6px 3px 14px;box-shadow:var(--shadow)}
+.cur-wrap label{font-size:.8rem;color:var(--muted);font-weight:600}
+select{font-family:inherit;font-size:.95rem;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:8px 10px}
+.cur-wrap select{border:0;background:transparent;font-weight:700;color:var(--navy);padding:4px 2px;min-height:2.25rem}
+
+/* ---------- Hero — editorial ledger signature ---------- */
+.hero{padding:44px 0 8px;display:grid;grid-template-columns:1.15fr .85fr;gap:36px;align-items:center;border-bottom:3px double var(--gold);padding-bottom:30px}
+@media (max-width:820px){ .hero{grid-template-columns:1fr} }
+.hero-copy{max-width:640px}
+.hero .kicker{display:inline-flex;align-items:center;gap:8px;font-size:.78rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--accent-ink);background:transparent;border:0;border-top:2px solid var(--gold);padding:8px 0 0;border-radius:0}
+.hero .kicker::before{content:"§";font-family:var(--font-display);font-size:1.1rem;color:var(--gold-deep)}
+.hero h1{font-size:clamp(2.25rem,5.4vw,3.55rem);line-height:1.08;letter-spacing:-.012em;margin:14px 0 16px;font-weight:600;color:var(--navy-deep)}
+@media (prefers-color-scheme: dark){ .hero h1{color:var(--ink)} }
+.hero h1 em{font-style:italic;font-weight:600;color:var(--gold-deep);text-decoration:underline;text-decoration-color:var(--gold);text-decoration-thickness:3px;text-underline-offset:6px}
+.hero p{font-size:1.09rem;line-height:1.68;letter-spacing:-.011em;color:var(--ink-soft);margin:0 0 22px;max-width:640px}
+.hero-gauge{background:var(--navy-deep);color:#fff;border-radius:6px;padding:22px 20px 18px;text-align:center;box-shadow:var(--shadow-lg);border-top:4px solid var(--gold);position:relative;overflow:hidden}
+.hero-gauge::after{content:"ROI";position:absolute;right:10px;top:2px;font-family:var(--font-display);font-size:4.2rem;font-weight:700;color:rgba(255,255,255,.06);line-height:1;pointer-events:none}
+.gauge-label{font-size:.68rem;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:#F5B81D}
+.gauge-svg{width:100%;max-width:260px;height:auto;display:block;margin:6px auto 0}
+.gauge-value{font-family:var(--font-display);font-size:2.6rem;font-weight:700;line-height:1;color:#fff;margin-top:-34px}
+.gauge-value small{font-size:1rem;color:#F5B81D}
+.gauge-sub{font-size:.8rem;color:#C6CEE2;margin-top:4px}
+.gauge-scale{display:flex;justify-content:space-between;font-size:.65rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#93A1BE;max-width:260px;margin:10px auto 0;border-top:1px solid rgba(255,255,255,.16);padding-top:8px}
+.roi-score-badge{display:inline-flex;align-items:center;gap:8px;margin-top:14px;background:var(--gold);color:#0B1D33;font-weight:800;font-size:.82rem;padding:7px 14px;border-radius:3px;letter-spacing:.02em}
+.roi-score-badge b{font-family:var(--font-display);font-size:1.15rem;line-height:1}
+.sample-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.sample-label{font-size:.85rem;font-weight:700;color:var(--muted)}
+.btn{border:1px solid var(--navy);background:var(--navy);color:#FFFFFF;font-weight:700;font-size:.95rem;padding:10px 20px;border-radius:8px;transition:transform .12s ease, box-shadow .12s ease;box-shadow:var(--shadow)}
+.btn:hover{transform:translateY(-1px);box-shadow:var(--shadow-lg)}
+.btn.ghost{background:var(--surface);color:var(--navy);border-color:var(--line)}
+.btn.copper{background:var(--gold);border-color:var(--gold);color:#0B1D33}
+.btn.copper:hover{background:var(--gold-bright)}
+.btn.small{padding:8px 14px;font-size:.88rem}
+.btn:disabled{opacity:.55;cursor:default;transform:none}
+
+/* ---------- Steps progress — numbered ledger ---------- */
+.steps-nav{display:flex;gap:0;margin:30px 0 22px;flex-wrap:wrap;border-top:1px solid var(--line);border-bottom:3px double var(--gold)}
+.step-chip{display:flex;align-items:center;gap:10px;background:transparent;border:0;border-right:1px solid var(--line);border-radius:0;padding:10px 18px 10px 10px;font-weight:600;font-size:.9rem;color:var(--ink-soft);box-shadow:none}
+.step-chip:last-child{border-right:0}
+.step-chip .n{font-family:var(--font-display);width:auto;height:auto;border-radius:0;background:transparent;color:var(--muted);display:block;font-size:1.6rem;font-weight:700;flex:none;line-height:1}
+.step-chip.on{color:var(--navy)}
+.step-chip.on .n{color:var(--gold-deep)}
+
+/* ---------- Layout ---------- */
+.layout{display:grid;grid-template-columns:1fr 330px;gap:22px;align-items:start}
+@media (max-width:920px){ .layout{grid-template-columns:1fr} }
+.card{background:var(--surface);border:1px solid var(--line);border-top:3px solid var(--navy);border-radius:4px;box-shadow:var(--shadow);padding:28px;margin-bottom:22px;position:relative;overflow:hidden}
+.card::before{content:"";position:absolute;top:0;left:0;right:0;height:1px;background:var(--gold);margin-top:4px}
+.big-num{position:absolute;right:16px;top:6px;font-family:var(--font-display);font-size:4.6rem;font-weight:700;line-height:1;color:var(--accent-soft);pointer-events:none;user-select:none}
+@media (prefers-color-scheme: dark){ .big-num{color:rgba(240,180,41,.14)} }
+.card h2{font-size:1.55rem;line-height:1.15;margin:0 0 5px;color:var(--navy-deep);font-weight:600;position:relative}
+@media (prefers-color-scheme: dark){ .card h2{color:var(--ink)} }
+.card .sub{color:var(--muted);margin:0 0 20px;font-size:.95rem;line-height:1.62;position:relative;max-width:88%}
+.step-tag{font-size:.72rem;font-weight:800;letter-spacing:.13em;text-transform:uppercase;color:var(--accent-ink);margin-bottom:8px;display:flex;align-items:center;gap:10px}
+.step-tag::after{content:"";flex:0 0 42px;height:2px;background:var(--gold)}
+
+/* Step 1 form */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media (max-width:560px){ .grid2{grid-template-columns:1fr} }
+.field label{display:block;font-weight:700;font-size:.88rem;margin-bottom:6px;color:var(--ink-soft)}
+.field select,.field input{width:100%}
+.field .hint{font-size:.78rem;color:var(--muted);margin-top:4px}
+
+/* Step 2 processes */
+.proc{border:1px solid var(--line-soft);border-radius:10px;padding:16px 18px;margin-bottom:12px;background:var(--surface2);transition:border-color .15s ease, background .15s ease}
+.proc.selected{border-color:var(--navy);background:var(--surface)}
+.proc-head{display:flex;gap:13px;align-items:flex-start;cursor:pointer;min-height:2.25rem}
+.proc-check{width:24px;height:24px;border-radius:7px;border:2px solid var(--line);flex:none;display:grid;place-items:center;margin-top:2px;background:var(--surface);color:transparent;transition:all .12s}
+.proc.selected .proc-check{background:var(--navy);border-color:var(--navy);color:#FFFFFF}
+.proc-icon{width:40px;height:40px;border-radius:8px;background:var(--accent-soft);color:var(--accent-ink);display:grid;place-items:center;flex:none}
+.proc-title{font-weight:700;font-size:1.02rem;line-height:1.3}
+.proc-desc{font-size:.86rem;color:var(--muted);margin-top:2px}
+.proc-potential{margin-left:auto;text-align:right;flex:none}
+.proc-potential .big{font-family:var(--font-display);letter-spacing:-.01em;font-size:1.45rem;font-weight:600;color:var(--navy);line-height:1;font-optical-sizing:auto}
+.proc-potential .lbl{font-size:.68rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.proc-inputs{display:none;grid-template-columns:1fr 1fr auto;gap:14px;margin-top:16px;padding-top:16px;border-top:1px dashed var(--line)}
+.proc.selected .proc-inputs{display:grid}
+@media (max-width:560px){ .proc-inputs{grid-template-columns:1fr 1fr} .proc-live{grid-column:1/-1} }
+.proc-inputs label{display:block;font-size:.8rem;font-weight:700;color:var(--ink-soft);margin-bottom:5px}
+.input-wrap{display:flex;align-items:center;gap:6px}
+.input-wrap input{width:100%;font-family:inherit;font-size:1rem;padding:9px 11px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink)}
+.input-wrap .unit{font-size:.82rem;color:var(--muted);white-space:nowrap}
+.proc-live{font-size:.85rem;color:var(--muted);align-self:end;padding-bottom:9px}
+.proc-live strong{color:var(--navy);font-size:1rem}
+input[type=number]::-webkit-inner-spin-button{opacity:.4}
+
+/* Sticky summary */
+.summary{position:sticky;top:18px;background:var(--navy-deep);color:#DCE6F2;border-radius:4px;border-top:4px solid var(--gold);padding:24px;box-shadow:var(--shadow-lg)}
+@media (prefers-color-scheme: dark){ .summary{background:#0F2238;border:1px solid var(--line)} }
+.summary h3{margin:0 0 2px;font-size:1.28rem;color:#FFFFFF}
+.summary .s-sub{font-size:.83rem;color:#B9C2D8;margin:0 0 18px}
+.sum-row{display:flex;justify-content:space-between;align-items:baseline;padding:9px 0;border-top:1px solid rgba(255,255,255,.14);gap:10px}
+.sum-row .k{font-size:.86rem;color:#C6CEE2}
+.sum-row .v{font-family:var(--font-display);letter-spacing:-.01em;font-size:1.38rem;font-weight:600;color:#fff;white-space:nowrap;font-optical-sizing:auto}
+.sum-row.hero-row .v{font-size:2.05rem;color:var(--gold)}
+.sum-row.hero-row .k{color:#FFFFFF;font-weight:700}
+.summary .btn{width:100%;margin-top:16px}
+.summary .fineprint{font-size:.74rem;color:#93A1BE;margin-top:12px;line-height:1.5}
+.scenario{margin-top:16px}
+.scenario .lbl{font-size:.74rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#B9C2D8;margin-bottom:7px}
+.seg{display:flex;background:rgba(255,255,255,.08);border-radius:10px;padding:3px;gap:3px}
+.seg button{flex:1;border:0;background:transparent;color:#C6CEE2;font-size:.8rem;font-weight:700;padding:7px 2px;border-radius:8px;min-height:2.25rem}
+.seg button.active{background:#FFFFFF;color:var(--navy-deep)}
+
+/* ---------- Results ---------- */
+.section-head{margin:38px 0 6px;position:relative;padding-top:14px;border-top:3px double var(--gold)}
+.section-head .big-num{top:-6px;font-size:5.2rem}
+.section-head h2{font-size:2.05rem;line-height:1.12;margin:0;color:var(--navy-deep);font-weight:600}
+@media (prefers-color-scheme: dark){ .section-head h2{color:var(--ink)} }
+.section-head p{color:var(--muted);margin:7px 0 0;max-width:680px;line-height:1.65}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:20px 0}
+@media (max-width:920px){ .kpis{grid-template-columns:repeat(2,1fr)} }
+@media (max-width:420px){ .kpis{grid-template-columns:1fr 1fr;gap:10px} }
+.kpi{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px;box-shadow:var(--shadow)}
+.kpi .k{font-size:.74rem;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+.kpi .v{font-family:var(--font-display);letter-spacing:-.012em;font-size:2rem;font-weight:600;color:var(--navy);line-height:1.1;margin-top:5px;font-optical-sizing:auto}
+@media (prefers-color-scheme: dark){ .kpi .v{color:var(--ink)} }
+.kpi .d{font-size:.8rem;color:var(--muted);margin-top:2px}
+.kpi.feature{background:var(--navy);border-color:var(--navy);border-top:4px solid var(--gold)}
+.kpi.feature .k{color:#F5B81D}.kpi.feature .v{color:#fff}.kpi.feature .d{color:#C6CEE2}
+.kpi{border-radius:4px;border-top:3px solid var(--line)}
+.score-strip{display:flex;align-items:center;gap:14px;flex-wrap:wrap;background:var(--surface);border:1px solid var(--line);border-left:6px solid var(--gold);padding:14px 18px;margin:0 0 16px;border-radius:4px;box-shadow:var(--shadow)}
+.score-strip .score-num{font-family:var(--font-display);font-size:2.2rem;font-weight:700;line-height:1;color:var(--navy-deep)}
+@media (prefers-color-scheme: dark){ .score-strip .score-num{color:var(--ink)} }
+.score-strip .score-lbl{font-size:.72rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--accent-ink)}
+.score-strip .score-note{font-size:.88rem;color:var(--muted);margin-left:auto;max-width:420px}
+
+.rank-list{display:flex;flex-direction:column;gap:12px}
+.rank-card{background:var(--surface);border:1px solid var(--line);border-radius:4px;box-shadow:var(--shadow);padding:18px 20px;display:grid;grid-template-columns:auto 1fr;gap:6px 18px;position:relative}
+.rank-badge{grid-row:span 2;width:56px;height:56px;border-radius:4px;background:var(--surface2);border:1px solid var(--line);color:var(--ink-soft);display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1}
+.rank-badge .rn{font-family:var(--font-display);letter-spacing:0;font-size:1.9rem;font-weight:700;line-height:1}
+.rank-badge .rl{font-size:.55rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+.rank-card.first{border:2px solid var(--gold);background:linear-gradient(180deg,var(--accent-soft),var(--surface) 62%);box-shadow:0 0 0 1px var(--gold),var(--shadow-lg);padding:26px 24px;grid-template-columns:auto 1fr}
+.rank-card.first .rank-badge{width:72px;height:72px;background:var(--navy-deep);color:#fff;border-color:var(--navy-deep)}
+.rank-card.first .rank-badge .rn{font-size:2.6rem;color:var(--gold-bright)}
+.rank-card.first .rank-name{font-size:1.3rem}
+.rank-card.first .rank-roi{font-size:1.9rem;color:var(--gold-deep)}
+.rank-top{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:baseline}
+.rank-name{font-weight:700;font-size:1.08rem}
+.first-tag{display:inline-block;font-size:.72rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;background:transparent;color:var(--gold-deep);border:2px solid var(--gold-deep);border-radius:3px;padding:4px 10px;margin-left:10px;vertical-align:3px;transform:rotate(-3deg)}
+@media (prefers-color-scheme: dark){ .first-tag{color:var(--gold-bright);border-color:var(--gold-bright)} .rank-card.first .rank-roi{color:var(--gold-bright)} }
+.rank-roi{font-family:var(--font-display);letter-spacing:-.01em;font-size:1.4rem;font-weight:600;color:var(--navy);white-space:nowrap;font-optical-sizing:auto}
+@media (prefers-color-scheme: dark){ .rank-roi{color:var(--ink)} }
+.rank-roi small{font-family:var(--font-body);font-size:.72rem;font-weight:700;color:var(--muted);letter-spacing:.05em;text-transform:uppercase}
+.rank-stats{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:8px}
+@media (max-width:720px){ .rank-stats{grid-template-columns:repeat(2,1fr)} }
+.rstat .k{font-size:.7rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+.rstat .v{font-weight:700;font-size:.98rem;margin-top:1px}
+.rstat .v.net{color:var(--accent-ink)}
+.bar-track{height:8px;background:var(--line-soft);border-radius:99px;margin-top:12px;overflow:hidden}
+.bar-fill{height:100%;background:linear-gradient(90deg,var(--navy2),var(--gold));border-radius:99px;transition:width .5s ease}
+.rank-card.first .bar-fill{background:var(--gold)}
+@media (prefers-color-scheme: dark){ .bar-fill{background:linear-gradient(90deg,#3E6EA5,#F0B429)} }
+.bar-lbl{font-size:.74rem;color:var(--muted);margin-top:5px}
+.empty-state{background:var(--surface);border:1.5px dashed var(--line);border-radius:10px;padding:34px 24px;text-align:center;color:var(--muted)}
+.empty-state strong{color:var(--ink-soft);display:block;font-size:1.05rem;margin-bottom:4px}
+
+/* Roadmap */
+.roadmap{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:20px}
+@media (max-width:920px){ .roadmap{grid-template-columns:1fr} }
+.phase{background:var(--surface);border:1px solid var(--line);border-radius:4px;box-shadow:var(--shadow);padding:22px;position:relative;overflow:hidden}
+.phase h3{font-family:var(--font-display)}
+.phase::before{content:"";position:absolute;top:0;left:0;right:0;height:4px;background:var(--navy)}
+.phase.p1::before{background:var(--accent)} .phase.p2::before{background:var(--navy2)} .phase.p3::before{background:var(--navy)}
+.phase .when{font-size:.72rem;font-weight:800;letter-spacing:.11em;text-transform:uppercase;color:var(--accent-ink)}
+.phase h3{font-size:1.42rem;margin:6px 0 4px;color:var(--navy-deep)}
+@media (prefers-color-scheme: dark){ .phase h3{color:var(--ink)} }
+.phase .focus{font-weight:700;color:var(--navy);font-size:.95rem;margin-bottom:10px}
+@media (prefers-color-scheme: dark){ .phase .focus{color:var(--navy2)} }
+.phase ul{margin:0;padding-left:18px;color:var(--ink-soft);font-size:.9rem}
+.phase li{margin-bottom:7px}
+.phase .metric{margin-top:14px;padding-top:12px;border-top:1px dashed var(--line);font-size:.83rem;color:var(--muted)}
+.phase .metric strong{color:var(--ink)}
+
+/* Bottom panels */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
+@media (max-width:920px){ .two-col{grid-template-columns:1fr} }
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:10px;box-shadow:var(--shadow);padding:22px}
+.panel h3{margin:0 0 10px;font-size:1.28rem;color:var(--navy-deep)}
+@media (prefers-color-scheme: dark){ .panel h3{color:var(--ink)} }
+.panel ul{margin:0;padding-left:18px;color:var(--ink-soft);font-size:.9rem}
+.panel li{margin-bottom:7px}
+.assump-table{width:100%;border-collapse:collapse;font-size:.87rem;border-top:3px double var(--navy);border-bottom:3px double var(--navy)}
+.assump-table th{text-align:left;font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding:8px 8px 8px 0;border-bottom:1px solid var(--navy)}
+.assump-table td{padding:8px 8px 8px 0;border-bottom:1px dotted var(--line);color:var(--ink-soft)}
+.assump-table tr:last-child td{border-bottom:0}
+.assump-table td:last-child{font-family:var(--font-display);font-weight:700;font-size:1rem;color:var(--navy-deep)}
+@media (prefers-color-scheme: dark){ .assump-table td:last-child{color:var(--ink)} }
+.assump-table td:last-child,.assump-table th:last-child{text-align:right;padding-right:0;font-variant-numeric:tabular-nums}
+.ai-note{background:var(--accent-soft);border:1px solid var(--line);border-radius:10px;padding:16px 18px;margin:18px 0 0}
+.ai-note strong{display:block;font-size:.98rem;color:var(--navy-deep);margin-bottom:4px}
+@media (prefers-color-scheme: dark){ .ai-note strong{color:var(--ink)} }
+.ai-note p{margin:0;font-size:.9rem;color:var(--ink-soft);line-height:1.6}
+.field-full{grid-column:1/-1}
+.report-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px;align-items:center}
+.toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);background:var(--navy-deep);color:#FFFFFF;padding:11px 20px;border-radius:999px;font-weight:600;font-size:.9rem;opacity:0;pointer-events:none;transition:all .25s ease;box-shadow:var(--shadow-lg);z-index:50}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+footer{margin-top:44px;padding-top:20px;border-top:1px solid var(--line);color:var(--muted);font-size:.82rem;display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
+
+/* ---------- Print report (PDF) ---------- */
+#printReport{display:none;color:#0F1C2E;font-family:var(--font-body);line-height:1.5;background:#FFFFFF}
+#printReport.capture{display:block;position:fixed;left:-10000px;top:0;width:800px;z-index:-1}
+@media print{
+  @page{margin:16mm 15mm}
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  html,body{background:#FFFFFF!important}
+  body{font-size:11pt}
+  .wrap,.toast{display:none!important}
+  #printReport{display:block!important}
+}
+  .pr-header{background:#0B1D33;color:#FFFFFF;padding:26px 30px;border-radius:6px}
+  .pr-kicker{font-size:.68rem;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#F5B81D;margin:0 0 8px}
+  .pr-title{font-family:var(--font-display);font-weight:600;font-size:2rem;line-height:1.12;letter-spacing:-.015em;margin:0}
+  .pr-meta{display:flex;gap:22px;flex-wrap:wrap;margin-top:12px;font-size:.82rem;color:#C6CEE2}
+  .pr-meta strong{color:#FFFFFF;font-weight:700}
+  .pr-section{margin-top:26px;page-break-inside:avoid}
+  .pr-section h2{font-family:var(--font-display);font-weight:600;font-size:1.25rem;color:#0B1D33;margin:0 0 4px;padding-bottom:7px;border-bottom:2px solid #9A6B00}
+  .pr-section .pr-sub{font-size:.83rem;color:#64748B;margin:6px 0 12px}
+  .pr-profile{display:flex;flex-wrap:wrap;border:1px solid #DCE3EB;border-radius:6px;overflow:hidden}
+  .pr-profile div{width:50%;padding:11px 16px;border-bottom:1px solid #E8EEF3}
+  .pr-profile div:nth-child(odd){border-right:1px solid #E8EEF3}
+  .pr-profile div:nth-last-child(-n+2){border-bottom:0}
+  .pr-profile .k{display:block;font-size:.66rem;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:#64748B;margin-bottom:2px}
+  .pr-profile .v{font-weight:700;font-size:.95rem;color:#0F1C2E}
+  .pr-profile div.pr-wide{width:100%;border-right:0;border-bottom:0}
+  .pr-kpis{display:flex;margin-top:4px}
+  .pr-kpi{flex:1 1 0;margin-right:10px;border:1px solid #DCE3EB;border-radius:6px;padding:13px 14px;background:#F7F9FB}
+  .pr-kpi:last-child{margin-right:0}
+  .pr-kpi.feature{background:#102A43;border-color:#102A43}
+  .pr-kpi .k{display:block;font-size:.64rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#64748B}
+  .pr-kpi.feature .k{color:#B9C2D8}
+  .pr-kpi .v{display:block;font-family:var(--font-display);font-weight:600;font-size:1.45rem;line-height:1.15;color:#102A43;margin-top:3px}
+  .pr-kpi.feature .v{color:#FFFFFF}
+  .pr-table{width:100%;border-collapse:collapse;font-size:.82rem;margin-top:4px}
+  .pr-table th{background:#102A43;color:#FFFFFF;text-align:right;font-size:.64rem;font-weight:800;letter-spacing:.07em;text-transform:uppercase;padding:9px 10px}
+  .pr-table th:first-child{text-align:left;border-radius:5px 0 0 0}
+  .pr-table th:last-child{border-radius:0 5px 0 0}
+  .pr-table td{padding:10px;border-bottom:1px solid #E8EEF3;text-align:right;font-variant-numeric:tabular-nums;color:#334155;vertical-align:top}
+  .pr-table td:first-child{text-align:left}
+  .pr-table tr.pr-first td{background:#FDF3D7}
+  .pr-uc{font-weight:700;color:#0F1C2E;font-size:.9rem}
+  .pr-uc .pr-rank{display:inline-block;background:#9A6B00;color:#FFFFFF;font-weight:800;font-size:.68rem;border-radius:99px;padding:1px 8px;margin-right:7px;vertical-align:1px}
+  .pr-uc .pr-setup{display:block;font-weight:500;font-size:.72rem;color:#64748B;margin-top:2px}
+  .pr-net{font-weight:800;color:#8A5A00}
+  .pr-empty{border:1.5px dashed #DCE3EB;border-radius:6px;padding:18px;text-align:center;color:#64748B;font-size:.88rem}
+  .pr-road{display:flex;margin-top:4px}
+  .pr-phase{flex:1 1 0;margin-right:10px;border:1px solid #DCE3EB;border-top:4px solid #102A43;border-radius:6px;padding:14px 15px;page-break-inside:avoid}
+  .pr-phase:last-child{margin-right:0}
+  .pr-phase.p1{border-top-color:#9A6B00}.pr-phase.p2{border-top-color:#1B4F72}
+  .pr-phase .when{font-size:.64rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#8A5A00}
+  .pr-phase h3{font-family:var(--font-display);font-weight:600;font-size:1.05rem;color:#0B1D33;margin:4px 0 3px}
+  .pr-phase .focus{font-weight:700;font-size:.8rem;color:#102A43;margin-bottom:8px}
+  .pr-phase ul{margin:0;padding-left:15px;font-size:.76rem;color:#334155}
+  .pr-phase li{margin-bottom:5px}
+  .pr-phase .metric{margin-top:9px;padding-top:8px;border-top:1px dashed #DCE3EB;font-size:.72rem;color:#64748B}
+  .pr-note{background:#F1F5F9;border:1px solid #DCE3EB;border-radius:6px;padding:16px 18px;page-break-inside:avoid}
+  .pr-note ul{margin:0;padding-left:17px;font-size:.82rem;color:#334155}
+  .pr-note li{margin-bottom:5px}
+  .pr-note li:last-child{margin-bottom:0}
+  .pr-foot{margin-top:22px;padding-top:12px;border-top:1px solid #DCE3EB;font-size:.72rem;color:#64748B;line-height:1.55}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- Top bar -->
+  <div class="topbar">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 20V10"/><path d="M10 20V4"/><path d="M16 20v-7"/><path d="M22 20H2"/></svg>
+      </span>
+      <span>AI ROI Calculator<small data-i="brandSub">For small &amp; medium businesses</small></span>
+    </div>
+    <div class="controls">
+      <div class="cur-wrap">
+        <label for="currency" data-i="currency">Currency</label>
+        <select id="currency" aria-label="Currency">
+          <option value="USD">USD $</option>
+          <option value="SGD">SGD S$</option>
+          <option value="TWD">TWD NT$</option>
+          <option value="JPY">JPY ¥</option>
+          <option value="EUR">EUR €</option>
+          <option value="GBP">GBP £</option>
+        </select>
+      </div>
+      <div class="lang-switch" role="group" aria-label="Language">
+        <button type="button" data-lang="en" class="active">EN</button>
+        <button type="button" data-lang="zh">繁中</button>
+        <button type="button" data-lang="ja">日本語</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hero -->
+  <header class="hero">
+    <div class="hero-copy">
+    <span class="kicker" data-i="kicker">AI adoption, in plain numbers</span>
+    <h1 data-i="h1">Find where AI pays off in your business — <em>before you spend a dollar.</em></h1>
+    <p data-i="heroP">Answer a few questions about the work your team does by hand today. This calculator estimates the hours and money AI could give back, what the tools might cost, and which use case to start with first.</p>
+    <div class="sample-row">
+      <span class="sample-label" data-i="trySample">Try a sample:</span>
+      <button type="button" class="btn ghost small" id="sampleShop" data-i="sampleShop">Small e-commerce shop</button>
+      <button type="button" class="btn ghost small" id="sampleFirm" data-i="sampleFirm">Accounting firm</button>
+    </div>
+    </div>
+    <div class="hero-gauge" aria-live="polite">
+      <div class="gauge-label">ROI Dial · Live estimate</div>
+      <svg class="gauge-svg" viewBox="0 0 200 115" role="img" aria-label="ROI gauge">
+        <path d="M 15 100 A 85 85 0 0 1 185 100" fill="none" stroke="rgba(255,255,255,.18)" stroke-width="10" stroke-linecap="round"/>
+        <path id="gaugeArc" d="M 15 100 A 85 85 0 0 1 185 100" fill="none" stroke="#F5B81D" stroke-width="10" stroke-linecap="round" stroke-dasharray="267" stroke-dashoffset="267"/>
+        <g stroke="rgba(255,255,255,.45)" stroke-width="2"><line x1="15" y1="100" x2="26" y2="100"/><line x1="38" y1="38" x2="46" y2="46"/><line x1="100" y1="15" x2="100" y2="26"/><line x1="162" y1="38" x2="154" y2="46"/><line x1="185" y1="100" x2="174" y2="100"/></g>
+        <g id="gaugeNeedle" style="transform-origin:100px 100px;transition:transform .6s ease"><line x1="100" y1="100" x2="100" y2="34" stroke="#fff" stroke-width="3" stroke-linecap="round"/><circle cx="100" cy="100" r="7" fill="#F5B81D" stroke="#0B1D33" stroke-width="2"/></g>
+      </svg>
+      <div class="gauge-value" id="gaugeValue">—</div>
+      <div class="gauge-sub" id="gaugeSub">Select a process to see your return</div>
+      <div class="gauge-scale"><span>Payback</span><span>Break-even</span><span>High return</span></div>
+      <div class="roi-score-badge">ROI SCORE <b id="gaugeScore">—</b><span>/ 100</span></div>
+    </div>
+  </header>
+
+  <!-- Steps -->
+  <nav class="steps-nav" aria-label="Steps">
+    <span class="step-chip on"><span class="n">01</span><span data-i="chip1">Your business</span></span>
+    <span class="step-chip"><span class="n">02</span><span data-i="chip2">Processes &amp; time</span></span>
+    <span class="step-chip"><span class="n">03</span><span data-i="chip3">Results &amp; roadmap</span></span>
+  </nav>
+
+  <div class="layout">
+    <div>
+      <!-- STEP 1 -->
+      <section class="card" id="step1">
+        <span class="big-num" aria-hidden="true">01</span>
+        <div class="step-tag" data-i="step1tag">Step 1 · Business profile</div>
+        <h2 data-i="step1h">Tell us about your business</h2>
+        <p class="sub" data-i="step1sub">This shapes the recommendations. Nothing is sent anywhere — everything runs in your browser.</p>
+        <div class="grid2">
+          <div class="field">
+            <label for="industry" data-i="fIndustry">Industry</label>
+            <select id="industry"></select>
+          </div>
+          <div class="field">
+            <label for="teamSize" data-i="fTeam">Team size</label>
+            <select id="teamSize"></select>
+          </div>
+          <div class="field">
+            <label for="revenue" data-i="fRevenue">Monthly revenue range</label>
+            <select id="revenue"></select>
+          </div>
+          <div class="field">
+            <label for="pain" data-i="fPain">Biggest pain point right now</label>
+            <select id="pain"></select>
+          </div>
+          <div class="field field-full">
+            <label for="existingAI" data-i="fExistingAI">Which AI tools do you already use?</label>
+            <select id="existingAI"></select>
+            <div class="hint" id="existingAIHint"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- STEP 2 -->
+      <section class="card" id="step2">
+        <span class="big-num" aria-hidden="true">02</span>
+        <div class="step-tag" data-i="step2tag">Step 2 · Processes</div>
+        <h2 data-i="step2h">Where does the time go?</h2>
+        <p class="sub" data-i="step2sub">Pick the processes you want to improve, then enter how many hours your team spends on each per week and the average hourly cost of the people doing it. Estimates are fine — you can adjust and watch the results update.</p>
+        <div id="procList"></div>
+      </section>
+    </div>
+
+    <!-- Live summary -->
+    <aside class="summary" aria-live="polite">
+      <h3 data-i="sumH">Your estimate so far</h3>
+      <p class="s-sub" data-i="sumSub">Updates live as you type.</p>
+      <div class="roi-score-badge" style="margin:0 0 14px">ROI SCORE <b id="sumScore">—</b><span>/ 100</span></div>
+      <div class="sum-row hero-row"><span class="k" data-i="sumNet">Net saving / month</span><span class="v" id="sumNet">—</span></div>
+      <div class="sum-row"><span class="k" data-i="sumAnnual">Net saving / year</span><span class="v" id="sumAnnual">—</span></div>
+      <div class="sum-row"><span class="k" data-i="sumHours">Hours back / month</span><span class="v" id="sumHours">—</span></div>
+      <div class="sum-row"><span class="k" data-i="sumPayback">Overall payback</span><span class="v" id="sumPayback">—</span></div>
+      <div class="scenario">
+        <div class="lbl" data-i="scenario">Adoption scenario</div>
+        <div class="seg" id="scenarioSeg">
+          <button type="button" data-scen="0.7" data-i="scenCons">Conservative</button>
+          <button type="button" data-scen="1" class="active" data-i="scenBase">Expected</button>
+          <button type="button" data-scen="1.15" data-i="scenOpt">Optimistic</button>
+        </div>
+      </div>
+      <button type="button" class="btn copper" id="seeResults" data-i="seeResults">See full results ↓</button>
+      <p class="fineprint" data-i="sumFine">Tool costs are planning estimates (ranges, not vendor quotes). See the assumptions below the results.</p>
+    </aside>
+  </div>
+
+  <!-- STEP 3 RESULTS -->
+  <div class="section-head" id="resultsAnchor">
+    <span class="big-num" aria-hidden="true">03</span>
+    <div class="step-tag" data-i="step3tag">Step 3 · Results</div>
+    <h2 data-i="resultsH">Your AI opportunity, ranked</h2>
+    <p data-i="resultsP">Use cases are ranked by return on investment — net monthly saving divided by the estimated monthly tool cost — so the cheapest, fastest win comes first.</p>
+  </div>
+  <div id="aiAdjustBanner" class="ai-note" style="display:none" role="note">
+    <strong id="aiAdjustTitle"></strong>
+    <p id="aiAdjustBody"></p>
+  </div>
+  <div class="score-strip" aria-live="polite"><div><div class="score-lbl">ROI Score</div><div class="score-num"><span id="roiScore">—</span><span style="font-size:1rem;color:var(--muted)"> / 100</span></div></div><p class="score-note" id="roiScoreNote">Pick a process in Step 02 — your score weighs net saving against tool cost, so a high score means a cheap, fast win.</p></div>
+  <div class="kpis">
+    <div class="kpi feature"><div class="k" data-i="kNet">Net saving / month</div><div class="v" id="kNet">—</div><div class="d" data-i="kNetD">After estimated tool costs</div></div>
+    <div class="kpi"><div class="k" data-i="kAnnual">Net saving / year</div><div class="v" id="kAnnual">—</div><div class="d" data-i="kAnnualD">If savings hold steady</div></div>
+    <div class="kpi"><div class="k" data-i="kHours">Hours back / month</div><div class="v" id="kHours">—</div><div class="d" data-i="kHoursD">Time your team gets back</div></div>
+    <div class="kpi"><div class="k" data-i="kPayback">Overall payback</div><div class="v" id="kPayback">—</div><div class="d" data-i="kPaybackD">Setup cost ÷ net monthly saving</div></div>
+  </div>
+  <div id="rankList"></div>
+
+  <!-- ROADMAP -->
+  <div class="section-head">
+    <h2 data-i="roadH">Your 90-day implementation roadmap</h2>
+    <p data-i="roadP">Built from your ranking: prove value fast with the top use case, turn it into a working agent, then scale what works.</p>
+  </div>
+  <div class="roadmap" id="roadmap"></div>
+
+  <!-- HONESTY + ASSUMPTIONS -->
+  <div class="two-col">
+    <div class="panel">
+      <h3 data-i="honestH">An honest note on these numbers</h3>
+      <ul>
+        <li data-i="honest1">These are estimates built from your own inputs — not a guarantee of savings.</li>
+        <li data-i="honest2">AI tool costs vary by vendor, plan and usage volume. Treat the ranges here as planning figures, and get real quotes before you commit.</li>
+        <li data-i="honest3">Savings depend on adoption: a tool nobody uses saves nothing. Training and habit change are part of the real cost.</li>
+        <li data-i="honest4">“Hours saved” only becomes money if the freed time goes to revenue work, or lets you avoid a future hire.</li>
+        <li data-i="honest5">Start with one process, measure for a month, then decide — that is what the roadmap below the results is for.</li>
+      </ul>
+    </div>
+    <div class="panel">
+      <h3 data-i="assumpH">Assumptions behind the math</h3>
+      <table class="assump-table">
+        <thead><tr><th data-i="aCol1">Process</th><th data-i="aCol2">Share of time AI can typically take over</th></tr></thead>
+        <tbody id="assumpBody"></tbody>
+      </table>
+      <p style="font-size:.82rem;color:var(--muted);margin:12px 0 0" data-i="assumpNote">One month = 4.33 weeks. Tool and one-time setup costs are mid-points of the estimate ranges shown for each process; payback = setup estimate ÷ net monthly saving.</p>
+      <p id="assumpAiNote" style="font-size:.82rem;color:var(--ink-soft);margin:10px 0 0;display:none"></p>
+    </div>
+  </div>
+
+  <div class="report-actions">
+    <button type="button" class="btn" id="copyReport" data-i="copyBtn">Copy report</button>
+    <button type="button" class="btn ghost" id="dlReport" data-i="dlBtn">Download PDF</button>
+    <span style="font-size:.85rem;color:var(--muted)" data-i="reportNote">A plain-language summary you can share with a partner, manager or investor.</span>
+  </div>
+
+  <footer>
+    <span data-i="footL">AI ROI Calculator for SMEs — runs entirely in your browser. No account, no data leaves this page.</span>
+    <span data-i="footR">Estimates only. Verify vendor pricing before purchasing.</span>
+  </footer>
+</div>
+
+<!-- Print-only report: hidden on screen, the only thing shown when printing / saving as PDF -->
+<div id="printReport" aria-hidden="true"></div>
+
+<div class="toast" id="toast" role="status"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+/* ================= Data ================= */
+var PROCESSES = [
+  { id:"support",   generic:0.40, save:0.60, tool:[30,120],  setup:[150,500], defH:15, defR:25,
+    icon:'<path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>' },
+  { id:"quoting",   generic:0.30, save:0.55, tool:[40,150],  setup:[200,600], defH:8,  defR:30,
+    icon:'<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M16 13H8"/><path d="M16 17H8"/>' },
+  { id:"inventory", generic:0.15, save:0.40, tool:[50,200],  setup:[300,900], defH:10, defR:22,
+    icon:'<path d="M21 8l-9-5-9 5v8l9 5 9-5z"/><path d="M3 8l9 5 9-5"/><path d="M12 13v8"/>' },
+  { id:"marketing", generic:0.55, save:0.65, tool:[25,100],  setup:[100,400], defH:12, defR:28,
+    icon:'<path d="M3 11l18-7-4 16-4.5-4.5z"/><path d="M13 15.5L21 4"/>' },
+  { id:"meetings",  generic:0.60, save:0.70, tool:[15,60],   setup:[50,250],  defH:6,  defR:35,
+    icon:'<rect x="3" y="4" width="18" height="17" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/><path d="M8 15h5"/>' },
+  { id:"sales",     generic:0.35, save:0.50, tool:[40,180],  setup:[200,700], defH:10, defR:32,
+    icon:'<path d="M23 6l-9.5 9.5-5-5L1 18"/><path d="M17 6h6v6"/>' },
+  { id:"dataentry", generic:0.25, save:0.75, tool:[30,120],  setup:[200,600], defH:14, defR:20,
+    icon:'<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M3 15h18"/><path d="M9 3v18"/><path d="M15 3v18"/>' }
+];
+var CURRENCIES = { USD:{f:1,s:"$"}, SGD:{f:1.35,s:"S$"}, TWD:{f:32,s:"NT$"}, JPY:{f:150,s:"¥"}, EUR:{f:0.92,s:"€"}, GBP:{f:0.79,s:"£"} };
+var WEEKS = 4.33;
+
+/* ================= i18n ================= */
+var I = {
+en:{ brandSub:"For small & medium businesses", currency:"Currency", kicker:"AI adoption, in plain numbers",
+  h1:"Find where AI pays off in your business — <em>before you spend a dollar.</em>",
+  heroP:"Answer a few questions about the work your team does by hand today. This calculator estimates the hours and money AI could give back, what the tools might cost, and which use case to start with first.",
+  trySample:"Try a sample:", sampleShop:"Small e-commerce shop", sampleFirm:"Accounting firm",
+  chip1:"Your business", chip2:"Processes & time", chip3:"Results & roadmap",
+  step1tag:"Step 1 · Business profile", step1h:"Tell us about your business", step1sub:"This shapes the recommendations. Nothing is sent anywhere — everything runs in your browser.",
+  fIndustry:"Industry", fTeam:"Team size", fRevenue:"Monthly revenue range", fPain:"Biggest pain point right now", fExistingAI:"Which AI tools do you already use?",
+  existingAI:["None yet","Microsoft 365 Copilot","Google Gemini (Workspace)","ChatGPT or Claude (paid)","Multiple of these"],
+  existingAIHintNone:"No adjustment applied — estimates show the full opportunity from a standing start.",
+  existingAIHintHas:"Adjusted: generic AI already covers basic drafting and summarising, so generic-task savings are reduced below. The remaining saving comes from custom workflows and agents built on top.",
+  aiNoteTitle:"Adjusted for the AI you already have — no double-counting",
+  aiNoteBody:"You already use {tool}. Generic AI like this already covers basic drafting and summarising, so we have reduced the estimated savings for generic tasks — for example first-draft content, email drafts and meeting summaries. The figures below are the additional saving still available from custom workflows and agents built on top of what you have, not the total saving from AI overall.",
+  assumpAiNote:"Already-have-AI adjustment: because you use {tool}, the share AI can take over is reduced for generic drafting and summarising tasks (most for meeting notes and marketing content, least for inventory and workflow-heavy tasks). Percentages in the table show the original share \u2192 the adjusted additional share.",
+  repExistingAI:"AI already in use", repAiNote:"Adjustment applied: existing generic AI already covers basic drafting and summarising, so savings for generic tasks have been reduced to avoid double-counting. Remaining figures are the additional saving from custom workflows and agents built on top.",
+  industries:["Retail","Food & beverage","E-commerce","Professional services","Manufacturing","Hospitality","Healthcare / clinic","Education / training","Logistics / warehousing","Real estate","Legal services","Financial services / accounting","Construction","Beauty / wellness","Fitness","Travel / tourism","Media / marketing agency","Non-profit","Agriculture / food production","IT / software services","Other"],
+  teams:["1–5 people","6–10 people","11–25 people","26–50 people","51–100 people","100+ people"],
+  revenues:["Under {c}10k","{c}10k – 50k","{c}50k – 150k","{c}150k – 500k","Over {c}500k"],
+  pains:["Customer replies are too slow","Too much manual admin work","Marketing takes too long","Sales follow-ups slip through","Rising costs, flat headcount","Not sure — just exploring"],
+  step2tag:"Step 2 · Processes", step2h:"Where does the time go?",
+  step2sub:"Pick the processes you want to improve, then enter how many hours your team spends on each per week and the average hourly cost of the people doing it. Estimates are fine — you can adjust and watch the results update.",
+  potential:"of time AI can take over", hrsWk:"Hours / week (whole team)", rateHr:"Hourly cost / person", perHr:"/ hr",
+  liveSave:"≈ {h} hrs saved / mo",
+  sumH:"Your estimate so far", sumSub:"Updates live as you type.", sumNet:"Net saving / month", sumAnnual:"Net saving / year", sumHours:"Hours back / month", sumPayback:"Overall payback",
+  scenario:"Adoption scenario", scenCons:"Conservative", scenBase:"Expected", scenOpt:"Optimistic",
+  seeResults:"See full results ↓", sumFine:"Tool costs are planning estimates (ranges, not vendor quotes). See the assumptions below the results.",
+  step3tag:"Step 3 · Results", resultsH:"Your AI opportunity, ranked",
+  resultsP:"Use cases are ranked by return on investment — net monthly saving divided by the estimated monthly tool cost — so the cheapest, fastest win comes first.",
+  kNet:"Net saving / month", kNetD:"After estimated tool costs", kAnnual:"Net saving / year", kAnnualD:"If savings hold steady",
+  kHours:"Hours back / month", kHoursD:"Time your team gets back", kPayback:"Overall payback", kPaybackD:"Setup cost ÷ net monthly saving",
+  rankLbl:"Rank", startHere:"Start here", roiLbl:"ROI / mo",
+  stHours:"Hours saved / mo", stMoney:"Money saved / mo", stTool:"Est. tool cost / mo", stNet:"Net / mo", stPayback:"Payback",
+  barLbl:"Net monthly saving, relative to your top use case", monthsUnit:"mo", lessThanMonth:"< 1 mo", noPayback:"—",
+  emptyT:"No processes selected yet", emptyP:"Tick at least one process in Step 2 — or load a sample business above — and your ranked results will appear here.",
+  roadH:"Your 90-day implementation roadmap", roadP:"Built from your ranking: prove value fast with the top use case, turn it into a working agent, then scale what works.",
+  ph1when:"Weeks 1–2", ph1title:"Quick win", ph2when:"Month 1", ph2title:"First agent", ph3when:"Months 2–3", ph3title:"Scale what works",
+  focusWith:"Start with: {name}", focusAgent:"Build on: {name}", focusRest:"Roll out: {names}", focusNone:"Pick a process above to personalise this roadmap.",
+  ph1steps:["Pick one tool for this process and run a free trial or pilot plan.","Give it your real examples — past replies, templates, documents — so output sounds like you.","Have one person own it, use it daily, and log time saved for two weeks."],
+  ph1metric:"Goal: prove it saves at least a few hours a week before spending more.",
+  ph2steps:["Connect the tool to the systems you already use (inbox, shop, accounting software).","Turn the manual steps into an agent workflow: draft → human check → send/file.","Write down the rules: what the agent may do alone, and what always needs a human."],
+  ph2metric:"Goal: the process runs with light human review, not copy-paste.",
+  ph3steps:["Roll out the next use cases from your ranking, one at a time.","Train the whole team; share the before/after numbers internally.","Re-check costs and savings monthly — drop tools that are not earning their keep."],
+  ph3metric:"Goal: savings become a habit and a line in your monthly review.",
+  honestH:"An honest note on these numbers",
+  honest1:"These are estimates built from your own inputs — not a guarantee of savings.",
+  honest2:"AI tool costs vary by vendor, plan and usage volume. Treat the ranges here as planning figures, and get real quotes before you commit.",
+  honest3:"Savings depend on adoption: a tool nobody uses saves nothing. Training and habit change are part of the real cost.",
+  honest4:"“Hours saved” only becomes money if the freed time goes to revenue work, or lets you avoid a future hire.",
+  honest5:"Start with one process, measure for a month, then decide — the roadmap below is built for exactly that.",
+  assumpH:"Assumptions behind the math", aCol1:"Process", aCol2:"Share of time AI can typically take over",
+  assumpNote:"One month = 4.33 weeks. Tool and one-time setup costs use the mid-point of the estimate range shown for each process; payback = setup estimate ÷ net monthly saving.",
+  copyBtn:"Copy report", dlBtn:"Download PDF", reportNote:"A plain-language summary you can share with a partner, manager or investor.",
+  footL:"AI ROI Calculator for SMEs — runs entirely in your browser. No account, no data leaves this page.", footR:"Estimates only. Verify vendor pricing before purchasing.",
+  copied:"Report copied to clipboard", copyFail:"Copy failed — use Download instead", pdfFail:"PDF could not be generated — please try Copy report instead",
+  proc:{ support:{n:"Customer service replies",d:"Answering repeat questions, order status, FAQs across chat, email and social."},
+    quoting:{n:"Quoting & invoicing",d:"Drafting quotes, invoices, payment reminders and chasing paperwork."},
+    inventory:{n:"Inventory & ordering",d:"Stock checks, reorder decisions, supplier emails and purchase orders."},
+    marketing:{n:"Marketing content",d:"Social posts, product descriptions, newsletters and campaign drafts."},
+    meetings:{n:"Meeting notes & follow-ups",d:"Transcribing meetings, writing summaries and chasing action items."},
+    sales:{n:"Sales follow-up",d:"Following up leads, CRM updates, reminders and reactivation messages."},
+    dataentry:{n:"Data entry & reporting",d:"Copying data between systems, cleaning spreadsheets, building routine reports."} },
+  repTitle:"AI ROI REPORT", repProfile:"BUSINESS PROFILE", repInd:"Industry", repTeam:"Team size", repRev:"Monthly revenue", repPain:"Main pain point",
+  repRanked:"USE CASES, RANKED BY ROI", repTotals:"TOTALS", repNetMo:"Net saving per month", repNetYr:"Net saving per year", repHours:"Hours saved per month", repPayback:"Overall payback (setup ÷ net monthly saving)",
+  repRoad:"90-DAY ROADMAP", repHoursSaved:"Hours saved/mo", repMoneySaved:"Money saved/mo", repTool:"Est. tool cost/mo", repNet:"Net/mo", repPb:"Payback", repSetup:"one-time setup est.",
+  repDisc:"Note: Estimates based on the inputs provided — not a guarantee. AI tool costs vary by vendor and volume; savings depend on team adoption. Get vendor quotes before purchasing.",
+  repGen:"Generated", repNone:"No processes selected."
+},
+zh:{ brandSub:"為中小企業而設", currency:"幣別", kicker:"用清楚的數字看 AI 導入",
+  h1:"在花任何一毛錢之前，先看清 AI 在你的公司哪裡最划算。",
+  heroP:"回答幾個關於團隊目前手工處理工作的問題。這個試算器會估算 AI 能幫你省回多少時間和金錢、工具大概要花多少成本，以及應該先從哪個用途開始。",
+  trySample:"試試範例：", sampleShop:"小型電商店", sampleFirm:"會計事務所",
+  chip1:"你的公司", chip2:"流程與時間", chip3:"結果與路線圖",
+  step1tag:"步驟 1 · 公司概況", step1h:"先聊聊你的公司", step1sub:"這會影響建議的方向。所有資料都不會送出——全部在你的瀏覽器裡計算。",
+  fIndustry:"產業", fTeam:"團隊人數", fRevenue:"每月營收範圍", fPain:"目前最大的痛點", fExistingAI:"你們已經在用哪些 AI 工具？",
+  existingAI:["還沒有","Microsoft 365 Copilot","Google Gemini（Workspace）","ChatGPT 或 Claude（付費版）","同時使用多種"],
+  existingAIHintNone:"不做調整——估算顯示從零開始的完整機會。",
+  existingAIHintHas:"已調整：通用 AI 已涵蓋基本撰寫與摘要，因此下方通用任務的節省已下調。剩餘節省來自在其之上建置的客製工作流與 Agent。",
+  aiNoteTitle:"已依你現有的 AI 調整——不重複計算",
+  aiNoteBody:"你已經在用 {tool}。這類通用 AI 已涵蓋基本撰寫與摘要，因此我們已下調通用任務的估計節省——例如內容初稿、信件草稿與會議摘要。下方數字是在你現有工具之上，再透過客製工作流與 Agent 能額外省下的部分，不是 AI 的總節省。",
+  assumpAiNote:"已有 AI 的調整：因為你使用 {tool}，通用撰寫與摘要任務可接手的比例已下調（會議紀錄與行銷內容下調最多，庫存與流程型任務最少）。表中百分比為原始比例 \u2192 調整後的額外比例。",
+  repExistingAI:"已在使用的 AI", repAiNote:"已套用調整：現有通用 AI 已涵蓋基本撰寫與摘要，通用任務的節省已下調以避免重複計算。剩餘數字為在其之上建置客製工作流與 Agent 的額外節省。",
+  industries:["零售","餐飲","電子商務","專業服務（會計／法律／顧問）","製造業","旅宿觀光","醫療／診所","教育／培訓","物流／倉儲","房地產","法律服務","金融服務／會計","建築／營造","美容／健康養生","健身","旅遊業","媒體／行銷代理","非營利組織","農業／食品生產","資訊科技／軟體服務","其他"],
+  teams:["1–5 人","6–10 人","11–25 人","26–50 人","51–100 人","100 人以上"],
+  revenues:["{c}1 萬以下","{c}1 萬 – 5 萬","{c}5 萬 – 15 萬","{c}15 萬 – 50 萬","{c}50 萬以上"],
+  pains:["客服回覆太慢","行政手工工作太多","行銷內容做太久","銷售跟進常常漏掉","成本上升但人力不能加","還不確定，先探索看看"],
+  step2tag:"步驟 2 · 流程", step2h:"時間都花在哪裡？",
+  step2sub:"勾選想改善的流程，再填入團隊每週花在上面的小時數，以及執行人員的平均時薪。估個大概就可以——隨時調整，結果會即時更新。",
+  potential:"的時間可由 AI 接手", hrsWk:"每週小時數（全團隊）", rateHr:"每人平均時薪", perHr:"/ 小時",
+  liveSave:"≈ 每月省下 {h} 小時",
+  sumH:"目前的估算", sumSub:"輸入時即時更新。", sumNet:"每月淨省", sumAnnual:"每年淨省", sumHours:"每月省回小時", sumPayback:"整體回本期",
+  scenario:"導入情境", scenCons:"保守", scenBase:"預期", scenOpt:"樂觀",
+  seeResults:"看完整結果 ↓", sumFine:"工具成本是規劃用估算（區間，不是廠商報價）。假設說明在結果下方。",
+  step3tag:"步驟 3 · 結果", resultsH:"你的 AI 機會，依投報率排名",
+  resultsP:"用途依投資報酬率排名——每月淨省除以估計的每月工具成本——讓最便宜、最快見效的先做。",
+  kNet:"每月淨省", kNetD:"已扣除估計工具成本", kAnnual:"每年淨省", kAnnualD:"假設節省幅度維持穩定",
+  kHours:"每月省回小時", kHoursD:"團隊拿回來的時間", kPayback:"整體回本期", kPaybackD:"建置成本 ÷ 每月淨省",
+  rankLbl:"排名", startHere:"先做這個", roiLbl:"每月投報率",
+  stHours:"每月省時", stMoney:"每月省錢", stTool:"估計工具費 / 月", stNet:"淨省 / 月", stPayback:"回本期",
+  barLbl:"每月淨省，相對於你的第一名用途", monthsUnit:"個月", lessThanMonth:"< 1 個月", noPayback:"—",
+  emptyT:"尚未選擇任何流程", emptyP:"在步驟 2 勾選至少一個流程——或載入上方的範例公司——排名結果就會出現在這裡。",
+  roadH:"你的 90 天導入路線圖", roadP:"依你的排名打造：先用第一名用途快速證明價值，再把它做成真正能運作的 Agent，最後放大有效的做法。",
+  ph1when:"第 1–2 週", ph1title:"快速見效", ph2when:"第 1 個月", ph2title:"第一個 Agent", ph3when:"第 2–3 個月", ph3title:"放大有效的做法",
+  focusWith:"從這個開始：{name}", focusAgent:"在此基礎上建置：{name}", focusRest:"依序推出：{names}", focusNone:"在上方選一個流程，路線圖會為你個人化。",
+  ph1steps:["為這個流程挑一款工具，先用免費試用或試點方案。","餵它你真實的範例——過去的回覆、模板、文件——讓產出像你的口吻。","指定一位負責人每天使用，並記錄兩週省下的時間。"],
+  ph1metric:"目標：在花更多錢之前，先證明每週能省下幾個小時。",
+  ph2steps:["把工具接上你已經在用的系統（信箱、商店、會計軟體）。","把手工步驟變成 Agent 工作流：草稿 → 人工確認 → 送出／歸檔。","把規則寫下來：Agent 可以自己做什麼、什麼永遠要人確認。"],
+  ph2metric:"目標：流程只需輕量人工審核就能跑，而不是複製貼上。",
+  ph3steps:["依排名逐一推出下一個用途，一次一個。","訓練整個團隊，並在內部分享導入前後的數字。","每月重新檢視成本與節省——不划算的工具就停掉。"],
+  ph3metric:"目標：節省變成習慣，成為每月檢視的一個項目。",
+  honestH:"關於這些數字，先說清楚",
+  honest1:"這些是根據你自己輸入的數字做的估算——不是節省保證。",
+  honest2:"AI 工具成本因廠商、方案和用量而異。這裡的區間是規劃用數字，正式投入前請取得真實報價。",
+  honest3:"節省取決於導入程度：沒人用的工具，省不了任何錢。訓練和改變習慣也是真實成本的一部分。",
+  honest4:"「省下的小時」只有在空出的時間拿去做能帶來營收的工作、或讓你少請一個人時，才真的變成錢。",
+  honest5:"先從一個流程開始，量測一個月再決定——下面的路線圖就是為此設計的。",
+  assumpH:"計算背後的假設", aCol1:"流程", aCol2:"通常可由 AI 接手的時間比例",
+  assumpNote:"一個月以 4.33 週計算。工具與一次性建置成本取各流程估計區間的中間值；回本期 = 建置估計 ÷ 每月淨省。",
+  copyBtn:"複製報告", dlBtn:"下載 PDF", reportNote:"一份白話摘要，可以分享給合夥人、主管或投資人。",
+  footL:"中小企業 AI ROI 試算器——完全在你的瀏覽器中運行。不用帳號，資料不離開這個頁面。", footR:"僅為估算。購買前請確認廠商定價。",
+  copied:"報告已複製到剪貼簿", copyFail:"複製失敗——請改用下載", pdfFail:"PDF 產生失敗——請改用複製報告",
+  proc:{ support:{n:"客服回覆",d:"回答重複問題、訂單進度、常見問題——橫跨聊天、Email 和社群。"},
+    quoting:{n:"報價與開立發票",d:"撰寫報價單、發票、付款提醒，以及追蹤文件。"},
+    inventory:{n:"庫存與訂貨",d:"盤點、補貨決策、供應商信件和採購單。"},
+    marketing:{n:"行銷內容",d:"社群貼文、商品描述、電子報和活動文案草稿。"},
+    meetings:{n:"會議紀錄與跟進",d:"會議轉錄、撰寫摘要，以及追蹤待辦事項。"},
+    sales:{n:"銷售跟進",d:"跟進潛在客戶、更新 CRM、提醒和喚回訊息。"},
+    dataentry:{n:"資料輸入與報表",d:"在系統間複製資料、整理試算表、製作例行報表。"} },
+  repTitle:"AI ROI 報告", repProfile:"公司概況", repInd:"產業", repTeam:"團隊人數", repRev:"每月營收", repPain:"主要痛點",
+  repRanked:"用途（依投報率排名）", repTotals:"總計", repNetMo:"每月淨省", repNetYr:"每年淨省", repHours:"每月省下小時", repPayback:"整體回本期（建置 ÷ 每月淨省）",
+  repRoad:"90 天路線圖", repHoursSaved:"每月省時", repMoneySaved:"每月省錢", repTool:"估計工具費/月", repNet:"淨省/月", repPb:"回本期", repSetup:"一次性建置估計",
+  repDisc:"注意：本報告為依輸入數字所做的估算，並非保證。AI 工具成本因廠商與用量而異；節省取決於團隊導入程度。購買前請取得廠商報價。",
+  repGen:"產生日期", repNone:"尚未選擇任何流程。"
+},
+ja:{ brandSub:"中小企業のための", currency:"通貨", kicker:"AI導入を、わかりやすい数字で",
+  h1:"1円も使う前に、あなたの会社でAIがどこで一番元を取るかを見極めましょう。",
+  heroP:"今チームが手作業でこなしている仕事についていくつか答えるだけ。この計算ツールが、AIで取り戻せる時間とお金、ツールの概算コスト、そして最初に取り組むべき用途を試算します。",
+  trySample:"サンプルを試す：", sampleShop:"小規模ECショップ", sampleFirm:"会計事務所",
+  chip1:"あなたの会社", chip2:"業務と時間", chip3:"結果とロードマップ",
+  step1tag:"ステップ1 · 会社プロフィール", step1h:"会社について教えてください", step1sub:"おすすめの方向性に反映されます。データはどこにも送信されません——すべてブラウザ内で計算します。",
+  fIndustry:"業種", fTeam:"チーム人数", fRevenue:"月商の範囲", fPain:"今一番の課題", fExistingAI:"すでに使っているAIツールは？",
+  existingAI:["まだ使っていない","Microsoft 365 Copilot","Google Gemini（Workspace）","ChatGPTまたはClaude（有料版）","複数を併用"],
+  existingAIHintNone:"調整なし——ゼロから導入した場合の全体の機会を示しています。",
+  existingAIHintHas:"調整済み：汎用AIは基本的な下書きと要約をすでにカバーしているため、汎用タスクの節約は引き下げています。残りの節約は、その上に構築するカスタムワークフローとエージェントによるものです。",
+  aiNoteTitle:"すでにあるAIに合わせて調整済み——二重計上なし",
+  aiNoteBody:"すでに {tool} をお使いです。このような汎用AIは基本的な下書きと要約をカバーしているため、汎用タスク（コンテンツの初稿、メールの下書き、会議の要約など）の推定節約を引き下げました。下の数字は、すでにあるものの上にカスタムワークフローとエージェントを構築することで得られる追加の節約であり、AI全体の節約ではありません。",
+  assumpAiNote:"既存AIの調整：{tool} を使用しているため、汎用的な下書き・要約タスクでAIが引き受けられる割合を引き下げています（会議メモとマーケティングが最も大きく、在庫やワークフロー中心の業務が最も小さい）。表の割合は「元の割合 \u2192 調整後の追加割合」です。",
+  repExistingAI:"すでに使用中のAI", repAiNote:"調整を適用：既存の汎用AIは基本的な下書きと要約をすでにカバーしているため、二重計上を避けるよう汎用タスクの節約を引き下げました。残りの数字は、その上にカスタムワークフローとエージェントを構築することによる追加の節約です。",
+  industries:["小売","飲食","EC・ネット通販","専門サービス（会計／法律／コンサル）","製造業","宿泊・観光","医療・クリニック","教育・研修","物流・倉庫","不動産","法律サービス","金融サービス・会計","建設","美容・ウェルネス","フィットネス","旅行・観光","メディア・マーケティング代理店","非営利団体","農業・食品生産","IT・ソフトウェアサービス","その他"],
+  teams:["1–5名","6–10名","11–25名","26–50名","51–100名","100名以上"],
+  revenues:["{c}1万未満","{c}1万 – 5万","{c}5万 – 15万","{c}15万 – 50万","{c}50万超"],
+  pains:["顧客対応の返信が遅い","手作業の事務が多い","マーケティングに時間がかかりすぎる","営業フォローが漏れる","コストは増えるが人員は増やせない","まだ分からない——まず探索したい"],
+  step2tag:"ステップ2 · 業務プロセス", step2h:"時間はどこに消えていますか？",
+  step2sub:"改善したい業務を選び、チーム全体で週に何時間かけているか、担当者の平均時給を入力してください。大まかな見積もりで大丈夫です——調整すると結果がその場で更新されます。",
+  potential:"の時間をAIが引き受け可能", hrsWk:"週あたり時間（チーム全体）", rateHr:"担当者の平均時給", perHr:"/ 時間",
+  liveSave:"≈ 月 {h} 時間を削減",
+  sumH:"現在の試算", sumSub:"入力に合わせてリアルタイム更新。", sumNet:"月あたり純節約", sumAnnual:"年あたり純節約", sumHours:"月に取り戻せる時間", sumPayback:"全体の回収期間",
+  scenario:"定着シナリオ", scenCons:"控えめ", scenBase:"標準", scenOpt:"楽観的",
+  seeResults:"詳しい結果を見る ↓", sumFine:"ツール費用は計画用の見積もりです（範囲表示で、業者の正式見積もりではありません）。前提条件は結果の下にあります。",
+  step3tag:"ステップ3 · 結果", resultsH:"あなたのAI活用機会、ROI順ランキング",
+  resultsP:"用途は投資対効果（月あたり純節約 ÷ 推定月額ツール費用）で順位付けしています。最も安く、最も早く効くものが先に来ます。",
+  kNet:"月あたり純節約", kNetD:"推定ツール費用を差し引き後", kAnnual:"年あたり純節約", kAnnualD:"節約が同水準で続いた場合",
+  kHours:"月に取り戻せる時間", kHoursD:"チームに返ってくる時間", kPayback:"全体の回収期間", kPaybackD:"初期費用 ÷ 月あたり純節約",
+  rankLbl:"順位", startHere:"まずはここから", roiLbl:"月あたりROI",
+  stHours:"月の削減時間", stMoney:"月の節約額", stTool:"推定ツール費 / 月", stNet:"純節約 / 月", stPayback:"回収期間",
+  barLbl:"月あたり純節約（1位の用途との比較）", monthsUnit:"か月", lessThanMonth:"1か月未満", noPayback:"—",
+  emptyT:"まだ業務が選ばれていません", emptyP:"ステップ2で少なくとも1つの業務にチェックを入れるか、上のサンプル企業を読み込むと、ランキング結果がここに表示されます。",
+  roadH:"あなたの90日導入ロードマップ", roadP:"ランキングから作成：1位の用途で素早く価値を証明し、動くエージェントに育て、効いたものを広げます。",
+  ph1when:"1–2週目", ph1title:"クイックウィン", ph2when:"1か月目", ph2title:"最初のエージェント", ph3when:"2–3か月目", ph3title:"効いたものを拡大",
+  focusWith:"まずはこれから：{name}", focusAgent:"これを土台に構築：{name}", focusRest:"順に展開：{names}", focusNone:"上で業務を選ぶと、ロードマップがあなた用になります。",
+  ph1steps:["この業務向けにツールを1つ選び、無料トライアルか試験プランで始める。","実際の例——過去の返信、テンプレート、文書——を渡し、出力が「自社らしく」なるようにする。","担当者を1人決め、毎日使ってもらい、2週間削減時間を記録する。"],
+  ph1metric:"目標：追加投資の前に、週に数時間の削減を証明すること。",
+  ph2steps:["すでに使っているシステム（メール、ショップ、会計ソフト）と連携させる。","手作業をエージェントの流れに変える：下書き → 人が確認 → 送信／保存。","ルールを文書化する：エージェントが単独でできること、必ず人が確認すること。"],
+  ph2metric:"目標：コピペではなく、軽い人の確認で業務が回る状態。",
+  ph3steps:["ランキングの次の用途を1つずつ展開する。","チーム全員に使い方を共有し、導入前後の数字を社内で見せる。","費用と節約を毎月見直し、元を取れていないツールはやめる。"],
+  ph3metric:"目標：節約が習慣になり、月次レビューの項目になること。",
+  honestH:"この数字について、正直にお伝えします",
+  honest1:"これはあなたの入力に基づく試算であり、節約を保証するものではありません。",
+  honest2:"AIツールの費用は業者、プラン、利用量で変わります。ここでの範囲は計画用と捉え、正式に決める前に実際の見積もりを取ってください。",
+  honest3:"節約は定着次第です：誰も使わないツールは何も節約しません。研修と習慣づけも実際のコストの一部です。",
+  honest4:"「削減時間」がお金になるのは、空いた時間を売上につながる仕事に回すか、将来の採用を避けられたときだけです。",
+  honest5:"まず1つの業務から始め、1か月測ってから判断してください——下のロードマップはそのためにあります。",
+  assumpH:"計算の前提条件", aCol1:"業務", aCol2:"AIが引き受けられる時間の目安",
+  assumpNote:"1か月 = 4.33週として計算。ツール費用と初期費用は各業務の見積もり範囲の中間値を使用；回収期間 = 初期費用 ÷ 月あたり純節約。",
+  copyBtn:"レポートをコピー", dlBtn:"PDFをダウンロード", reportNote:"パートナーや上司、投資家に共有できる、平易な言葉の要約です。",
+  footL:"中小企業のためのAI ROI計算ツール——すべてブラウザ内で動作。アカウント不要、データはこのページから出ません。", footR:"あくまで試算です。購入前に業者の価格を確認してください。",
+  copied:"レポートをクリップボードにコピーしました", copyFail:"コピーに失敗しました——ダウンロードをご利用ください", pdfFail:"PDFを生成できませんでした——レポートのコピーをお試しください",
+  proc:{ support:{n:"カスタマー対応の返信",d:"よくある質問、注文状況、FAQへの回答——チャット、メール、SNSを通じて。"},
+    quoting:{n:"見積もり・請求",d:"見積書、請求書、支払いリマインドの作成と書類のフォロー。"},
+    inventory:{n:"在庫・発注",d:"在庫確認、補充判断、仕入先へのメールと発注書。"},
+    marketing:{n:"マーケティングコンテンツ",d:"SNS投稿、商品説明、ニュースレター、キャンペーンの下書き。"},
+    meetings:{n:"会議メモとフォローアップ",d:"会議の文字起こし、要約作成、アクション項目の催促。"},
+    sales:{n:"営業フォローアップ",d:"見込み客へのフォロー、CRM更新、リマインドと再活性化メッセージ。"},
+    dataentry:{n:"データ入力・レポート",d:"システム間のデータ転記、表計算の整理、定例レポート作成。"} },
+  repTitle:"AI ROI レポート", repProfile:"会社プロフィール", repInd:"業種", repTeam:"チーム人数", repRev:"月商", repPain:"主な課題",
+  repRanked:"用途（ROI順）", repTotals:"合計", repNetMo:"月あたり純節約", repNetYr:"年あたり純節約", repHours:"月あたり削減時間", repPayback:"全体の回収期間（初期費用 ÷ 月あたり純節約）",
+  repRoad:"90日ロードマップ", repHoursSaved:"月の削減時間", repMoneySaved:"月の節約額", repTool:"推定ツール費/月", repNet:"純節約/月", repPb:"回収期間", repSetup:"初期費用の推定",
+  repDisc:"注記：本レポートは入力値に基づく試算であり、保証ではありません。AIツールの費用は業者と利用量により変わり、節約はチームの定着次第です。購入前に業者の見積もりを確認してください。",
+  repGen:"作成日", repNone:"業務が選択されていません。"
+}};
+
+/* ================= State ================= */
+var lang = "en";
+var currency = "USD";
+var scenario = 1;
+var selected = {};   // id -> {h, r}
+var $ = function(id){ return document.getElementById(id); };
+function T(){ return I[lang]; }
+function cur(){ return CURRENCIES[currency]; }
+function money(v){ var f = cur().f; var n = Math.round(v); return cur().s + n.toLocaleString("en-US"); }
+function moneyUSD(v){ return money(v); } // values stored in USD base, formatted in chosen currency via factor inside moneyFor
+function moneyFor(usd){ return cur().s + Math.round(usd * cur().f).toLocaleString("en-US"); }
+function fmtH(v){ return (Math.round(v*10)/10).toLocaleString("en-US"); }
+function aiIndex(){ var el=document.getElementById("existingAI"); return el ? (parseInt(el.value||"0",10)||0) : 0; }
+function aiFactor(){ var i=aiIndex(); if(i===0) return 0; if(i===3) return 0.8; return 1; }
+function hasAI(){ return aiIndex()!==0; }
+function aiToolName(){ var t=T(); var i=aiIndex(); return (t.existingAI && t.existingAI[i]) ? t.existingAI[i] : ""; }
+function adjSaveRate(p){ return p.save*(1-(p.generic||0)*aiFactor()); }
+
+/* ================= Build selects ================= */
+function fillSelect(sel, items){ sel.innerHTML = ""; items.forEach(function(x,i){ var o=document.createElement("option"); o.value=i; o.textContent=x; sel.appendChild(o); }); }
+function fillStaticSelects(){
+  var t=T();
+  fillSelect($("industry"), t.industries);
+  fillSelect($("teamSize"), t.teams);
+  fillSelect($("revenue"), t.revenues.map(function(r){ return r.replace("{c}", cur().s); }));
+  fillSelect($("pain"), t.pains);
+  fillSelect($("existingAI"), t.existingAI);
+}
+
+/* ================= Build process cards ================= */
+function buildProcesses(){
+  var t=T(), list=$("procList"); list.innerHTML="";
+  PROCESSES.forEach(function(p){
+    var sel = selected[p.id];
+    var div=document.createElement("div"); div.className="proc"+(sel?" selected":""); div.id="proc-"+p.id;
+    var inputs = sel ? sel : {h:p.defH, r:p.defR};
+    div.innerHTML =
+      '<div class="proc-head" data-toggle="'+p.id+'" role="button" tabindex="0" aria-pressed="'+(!!sel)+'">'+
+        '<span class="proc-check"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>'+
+        '<span class="proc-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">'+p.icon+'</svg></span>'+
+        '<span><span class="proc-title">'+t.proc[p.id].n+'</span><span class="proc-desc" style="display:block">'+t.proc[p.id].d+'</span></span>'+
+        '<span class="proc-potential"><span class="big">'+Math.round(adjSaveRate(p)*100)+'%</span><span class="lbl" style="display:block">'+t.potential+'</span></span>'+
+      '</div>'+
+      '<div class="proc-inputs">'+
+        '<div><label>'+t.hrsWk+'</label><div class="input-wrap"><input type="number" min="0" max="400" step="0.5" value="'+inputs.h+'" data-in="h" data-id="'+p.id+'" inputmode="decimal"><span class="unit">hrs</span></div></div>'+
+        '<div><label>'+t.rateHr+'</label><div class="input-wrap"><span class="unit">'+cur().s+'</span><input type="number" min="0" max="100000" step="1" value="'+Math.round(inputs.r*cur().f)+'" data-in="r" data-id="'+p.id+'" inputmode="decimal"><span class="unit">'+t.perHr+'</span></div></div>'+
+        '<div class="proc-live" data-live="'+p.id+'"></div>'+
+      '</div>';
+    list.appendChild(div);
+  });
+  // events
+  list.querySelectorAll("[data-toggle]").forEach(function(el){
+    function tog(){ toggleProc(el.getAttribute("data-toggle")); }
+    el.addEventListener("click", function(e){ if(e.target.tagName!=="INPUT") tog(); });
+    el.addEventListener("keydown", function(e){ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); tog(); } });
+  });
+  list.querySelectorAll("input[data-in]").forEach(function(inp){
+    inp.addEventListener("input", function(){
+      var id=inp.getAttribute("data-id"), kind=inp.getAttribute("data-in");
+      if(!selected[id]) return;
+      var v=parseFloat(inp.value)||0;
+      if(kind==="r") v = v / cur().f; // store hourly rate in USD base
+      selected[id][kind]=v;
+      compute();
+    });
+    inp.addEventListener("click", function(e){ e.stopPropagation(); });
+  });
+}
+function toggleProc(id){
+  if(selected[id]){ delete selected[id]; }
+  else { var p=PROCESSES.find(function(x){return x.id===id;}); selected[id]={h:p.defH, r:p.defR}; }
+  buildProcesses(); compute();
+}
+
+/* ================= Compute ================= */
+function calc(){
+  var rows=[];
+  PROCESSES.forEach(function(p){
+    var s=selected[p.id]; if(!s) return;
+    var effSave=Math.min(0.92, adjSaveRate(p)*scenario);
+    var hoursSaved = s.h * WEEKS * effSave;
+    var moneySaved = hoursSaved * s.r;
+    var toolMid = (p.tool[0]+p.tool[1])/2;
+    var setupMid = (p.setup[0]+p.setup[1])/2;
+    var net = moneySaved - toolMid;
+    var roi = toolMid>0 ? net/toolMid : 0;
+    var payback = net>0 ? setupMid/net : Infinity;
+    rows.push({p:p, hoursSaved:hoursSaved, moneySaved:moneySaved, toolMid:toolMid, setupMid:setupMid, net:net, roi:roi, payback:payback});
+  });
+  rows.sort(function(a,b){ return b.roi - a.roi; });
+  var tot={ hours:0, money:0, tool:0, net:0, setup:0 };
+  rows.forEach(function(r){ tot.hours+=r.hoursSaved; tot.money+=r.moneySaved; tot.tool+=r.toolMid; tot.net+=r.net; tot.setup+=r.setupMid; });
+  tot.payback = tot.net>0 ? tot.setup/tot.net : Infinity;
+  return {rows:rows, tot:tot};
+}
+function paybackText(m){
+  var t=T();
+  if(!isFinite(m)) return t.noPayback;
+  if(m<1) return t.lessThanMonth;
+  return (Math.round(m*10)/10) + " " + t.monthsUnit;
+}
+function compute(){
+  var t=T(), res=calc(), rows=res.rows, tot=res.tot;
+  var banner=$("aiAdjustBanner");
+  if(banner){ if(hasAI()){ banner.style.display="block"; $("aiAdjustTitle").textContent=t.aiNoteTitle; $("aiAdjustBody").textContent=t.aiNoteBody.replace("{tool}", aiToolName()); } else { banner.style.display="none"; } }
+  var hintEl=$("existingAIHint");
+  if(hintEl){ hintEl.textContent = hasAI() ? t.existingAIHintHas : t.existingAIHintNone; }
+  // live per-process hints
+  rows.forEach(function(r){
+    var el=document.querySelector('[data-live="'+r.p.id+'"]');
+    if(el) el.innerHTML = t.liveSave.replace("{h}", fmtH(r.hoursSaved)) + "<br><strong>" + moneyFor(r.net) + "</strong> " + t.stNet;
+  });
+  // summary + KPIs
+  var has = rows.length>0;
+  $("sumNet").textContent = has? moneyFor(tot.net) : "—";
+  $("sumAnnual").textContent = has? moneyFor(tot.net*12) : "—";
+  $("sumHours").textContent = has? fmtH(tot.hours) : "—";
+  $("sumPayback").textContent = has? paybackText(tot.payback) : "—";
+  $("kNet").textContent = has? moneyFor(tot.net) : "—";
+  $("kAnnual").textContent = has? moneyFor(tot.net*12) : "—";
+  $("kHours").textContent = has? fmtH(tot.hours) : "—";
+  $("kPayback").textContent = has? paybackText(tot.payback) : "—";
+  // ROI dial + score badge (score = 100 * roi/(roi+2), roi = net/tool)
+  var overallRoi = (has && tot.tool>0) ? tot.net/tot.tool : 0;
+  var score = has ? (overallRoi>0 ? Math.round(100*overallRoi/(overallRoi+2)) : 5) : null;
+  var scoreTxt = score===null ? "—" : String(score);
+  var gs=document.getElementById("gaugeScore"); if(gs) gs.textContent=scoreTxt;
+  var ss=document.getElementById("sumScore"); if(ss) ss.textContent=scoreTxt;
+  var rs=document.getElementById("roiScore"); if(rs) rs.textContent=scoreTxt;
+  var gv=document.getElementById("gaugeValue");
+  if(gv) gv.innerHTML = has ? Math.round(overallRoi*100)+'% <small>ROI / mo</small>' : "—";
+  var gsub=document.getElementById("gaugeSub");
+  if(gsub) gsub.textContent = has ? (moneyFor(tot.net)+" net / month · payback "+paybackText(tot.payback)) : "Select a process to see your return";
+  var needle=document.getElementById("gaugeNeedle");
+  if(needle) needle.style.transform="rotate("+((score===null? -90 : -90+score*1.8))+"deg)";
+  var arc=document.getElementById("gaugeArc");
+  if(arc) arc.style.strokeDashoffset = String(267 - 267*((score||0)/100));
+  var note=document.getElementById("roiScoreNote");
+  if(note && has) note.textContent = score>=80 ? "Excellent — low tool cost against a large net saving. Start with the #1 use case below." : (score>=50 ? "Solid — the return comfortably beats the tool cost. Start with the #1 use case below." : "Marginal for now — check the ranking: one use case may still pay back fast even if the total is modest.");
+  // ranked list
+  var rl=$("rankList");
+  if(!has){
+    rl.innerHTML='<div class="empty-state"><strong>'+t.emptyT+'</strong>'+t.emptyP+'</div>';
+  } else {
+    var maxNet=Math.max.apply(null, rows.map(function(r){return Math.max(r.net,0);}))||1;
+    rl.innerHTML='<div class="rank-list">'+rows.map(function(r,i){
+      var pct=Math.max(0, Math.round(r.net/maxNet*100));
+      return '<article class="rank-card'+(i===0?" first":"")+'">'+
+        '<div class="rank-badge"><span class="rn">'+(i+1)+'</span><span class="rl">'+t.rankLbl+'</span></div>'+
+        '<div><div class="rank-top"><span class="rank-name">'+t.proc[r.p.id].n+(i===0?'<span class="first-tag">'+t.startHere+'</span>':"")+'</span>'+
+        '<span class="rank-roi">'+Math.round(r.roi*100)+'% <small>'+t.roiLbl+'</small></span></div>'+
+        '<div class="rank-stats">'+
+          '<div class="rstat"><div class="k">'+t.stHours+'</div><div class="v">'+fmtH(r.hoursSaved)+'</div></div>'+
+          '<div class="rstat"><div class="k">'+t.stMoney+'</div><div class="v">'+moneyFor(r.moneySaved)+'</div></div>'+
+          '<div class="rstat"><div class="k">'+t.stTool+'</div><div class="v">'+moneyFor(r.p.tool[0])+" – "+moneyFor(r.p.tool[1])+'</div></div>'+
+          '<div class="rstat"><div class="k">'+t.stNet+'</div><div class="v net">'+moneyFor(r.net)+'</div></div>'+
+          '<div class="rstat"><div class="k">'+t.stPayback+'</div><div class="v">'+paybackText(r.payback)+'</div></div>'+
+        '</div>'+
+        '<div class="bar-track"><div class="bar-fill" style="width:'+pct+'%"></div></div>'+
+        '<div class="bar-lbl">'+t.barLbl+'</div></div></article>';
+    }).join("")+'</div>';
+  }
+  buildRoadmap(rows);
+  buildAssump();
+}
+function buildRoadmap(rows){
+  var t=T(), rm=$("roadmap");
+  function names(list){ return list.map(function(r){ return t.proc[r.p.id].n; }).join(" · "); }
+  var f1 = rows.length? t.focusWith.replace("{name}", t.proc[rows[0].p.id].n) : t.focusNone;
+  var f2 = rows.length>1? t.focusAgent.replace("{name}", t.proc[rows[1].p.id].n) : (rows.length? t.focusAgent.replace("{name}", t.proc[rows[0].p.id].n) : t.focusNone);
+  var f3 = rows.length>2? t.focusRest.replace("{names}", names(rows.slice(2))) : (rows.length? t.focusRest.replace("{names}", names(rows)) : t.focusNone);
+  function phase(cls, when, title, focus, steps, metric){
+    return '<div class="phase '+cls+'"><div class="when">'+when+'</div><h3>'+title+'</h3><div class="focus">'+focus+'</div><ul>'+
+      steps.map(function(s){return "<li>"+s+"</li>";}).join("")+'</ul><div class="metric">'+metric+'</div></div>';
+  }
+  rm.innerHTML =
+    phase("p1", t.ph1when, t.ph1title, f1, t.ph1steps, "<strong>"+t.ph1metric+"</strong>") +
+    phase("p2", t.ph2when, t.ph2title, f2, t.ph2steps, "<strong>"+t.ph2metric+"</strong>") +
+    phase("p3", t.ph3when, t.ph3title, f3, t.ph3steps, "<strong>"+t.ph3metric+"</strong>");
+}
+function buildAssump(){
+  var t=T();
+  $("assumpBody").innerHTML = PROCESSES.map(function(p){
+    var orig=Math.round(p.save*100), adj=Math.round(adjSaveRate(p)*100);
+    var txt = (hasAI() && adj!==orig) ? orig+"% \u2192 "+adj+"%" : orig+"%";
+    return "<tr><td>"+t.proc[p.id].n+"</td><td>"+txt+"</td></tr>";
+  }).join("");
+  var note=$("assumpAiNote");
+  if(note){ if(hasAI()){ note.style.display="block"; note.textContent=t.assumpAiNote.replace("{tool}", aiToolName()); } else { note.style.display="none"; note.textContent=""; } }
+}
+
+/* ================= Language ================= */
+function applyLang(){
+  var t=T();
+  document.documentElement.lang = lang==="zh" ? "zh-Hant" : lang;
+  document.querySelectorAll("[data-i]").forEach(function(el){ var k=el.getAttribute("data-i"); if(t[k]) el.innerHTML=t[k]; });
+  document.querySelectorAll(".lang-switch button").forEach(function(b){ b.classList.toggle("active", b.getAttribute("data-lang")===lang); });
+  // preserve profile selections across language switch
+  var iv=$("industry").value, tv=$("teamSize").value, rv=$("revenue").value, pv=$("pain").value, av=$("existingAI").value;
+  fillStaticSelects();
+  if(iv!=="") $("industry").value=iv; if(tv!=="") $("teamSize").value=tv; if(rv!=="") $("revenue").value=rv; if(pv!=="") $("pain").value=pv; if(av!=="") $("existingAI").value=av;
+  buildProcesses(); compute();
+}
+document.querySelectorAll(".lang-switch button").forEach(function(b){
+  b.addEventListener("click", function(){ lang=b.getAttribute("data-lang"); applyLang(); });
+});
+$("currency").addEventListener("change", function(){
+  currency=this.value;
+  var t=T(); // refresh revenue labels (currency symbol)
+  var rv=$("revenue").value; fillSelect($("revenue"), t.revenues.map(function(r){ return r.replace("{c}", cur().s); })); $("revenue").value=rv;
+  buildProcesses(); compute();
+});
+$("scenarioSeg").querySelectorAll("button").forEach(function(b){
+  b.addEventListener("click", function(){
+    scenario=parseFloat(b.getAttribute("data-scen"));
+    $("scenarioSeg").querySelectorAll("button").forEach(function(x){ x.classList.toggle("active", x===b); });
+    compute();
+  });
+});
+$("seeResults").addEventListener("click", function(){ $("resultsAnchor").scrollIntoView({behavior:"smooth"}); });
+$("existingAI").addEventListener("change", function(){ buildProcesses(); compute(); });
+
+/* ================= Samples ================= */
+function loadSample(kind){
+  currency="USD"; $("currency").value="USD";
+  if(kind==="shop"){
+    $("industry").value=2; $("teamSize").value=1; $("revenue").value=2; $("pain").value=0;
+    selected={ support:{h:20,r:18}, marketing:{h:10,r:22}, inventory:{h:8,r:18}, dataentry:{h:6,r:16} };
+  } else {
+    $("industry").value=3; $("teamSize").value=2; $("revenue").value=2; $("pain").value=1;
+    selected={ dataentry:{h:25,r:28}, meetings:{h:8,r:45}, quoting:{h:12,r:35}, sales:{h:5,r:40} };
+  }
+  var rv=$("revenue").value, t=T();
+  fillSelect($("revenue"), t.revenues.map(function(r){ return r.replace("{c}", cur().s); })); $("revenue").value=rv;
+  buildProcesses(); compute();
+  $("resultsAnchor").scrollIntoView({behavior:"smooth"});
+}
+$("sampleShop").addEventListener("click", function(){ loadSample("shop"); });
+$("sampleFirm").addEventListener("click", function(){ loadSample("firm"); });
+
+/* ================= Report ================= */
+function buildReport(){
+  var t=T(), res=calc(), rows=res.rows, tot=res.tot;
+  var L=[];
+  L.push("========================================");
+  L.push(t.repTitle + " — " + (lang==="en" ? $("industry").selectedOptions[0].textContent : ""));
+  L.push(t.repGen + ": " + new Date().toLocaleDateString(lang==="zh"?"zh-TW":lang==="ja"?"ja-JP":"en-US"));
+  L.push("========================================");
+  L.push("");
+  L.push("[" + t.repProfile + "]");
+  L.push(t.repInd + ": " + $("industry").selectedOptions[0].textContent);
+  L.push(t.repTeam + ": " + $("teamSize").selectedOptions[0].textContent);
+  L.push(t.repRev + ": " + $("revenue").selectedOptions[0].textContent);
+  L.push(t.repPain + ": " + $("pain").selectedOptions[0].textContent);
+  L.push(t.repExistingAI + ": " + $("existingAI").selectedOptions[0].textContent);
+  if(hasAI()){ L.push(t.repAiNote); }
+  L.push("");
+  L.push("[" + t.repRanked + "]");
+  if(!rows.length){ L.push(t.repNone); }
+  rows.forEach(function(r,i){
+    L.push("");
+    L.push((i+1) + ". " + t.proc[r.p.id].n + "  (ROI " + Math.round(r.roi*100) + "%)");
+    L.push("   " + t.repHoursSaved + ": " + fmtH(r.hoursSaved));
+    L.push("   " + t.repMoneySaved + ": " + moneyFor(r.moneySaved));
+    L.push("   " + t.repTool + ": " + moneyFor(r.p.tool[0]) + " – " + moneyFor(r.p.tool[1]));
+    L.push("   " + t.repNet + ": " + moneyFor(r.net));
+    L.push("   " + t.repPb + ": " + paybackText(r.payback) + "  (" + t.repSetup + ": " + moneyFor(r.p.setup[0]) + " – " + moneyFor(r.p.setup[1]) + ")");
+  });
+  L.push("");
+  L.push("[" + t.repTotals + "]");
+  L.push(t.repNetMo + ": " + moneyFor(tot.net));
+  L.push(t.repNetYr + ": " + moneyFor(tot.net*12));
+  L.push(t.repHours + ": " + fmtH(tot.hours));
+  L.push(t.repPayback + ": " + paybackText(tot.payback));
+  L.push("");
+  L.push("[" + t.repRoad + "]");
+  function phaseLines(when, title, steps){ L.push(""); L.push(when + " — " + title); steps.forEach(function(s){ L.push(" - " + s); }); }
+  phaseLines(t.ph1when, t.ph1title, t.ph1steps);
+  phaseLines(t.ph2when, t.ph2title, t.ph2steps);
+  phaseLines(t.ph3when, t.ph3title, t.ph3steps);
+  L.push("");
+  L.push("----------------------------------------");
+  L.push(t.repDisc);
+  return L.join("\n");
+}
+function toast(msg){
+  var el=$("toast"); el.textContent=msg; el.classList.add("show");
+  setTimeout(function(){ el.classList.remove("show"); }, 2400);
+}
+$("copyReport").addEventListener("click", function(){
+  var txt=buildReport(), t=T();
+  function done(){ toast(t.copied); }
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(txt).then(done, function(){ fallback(); });
+  } else fallback();
+  function fallback(){
+    var ta=document.createElement("textarea"); ta.value=txt; ta.style.position="fixed"; ta.style.opacity="0";
+    document.body.appendChild(ta); ta.select();
+    try { document.execCommand("copy"); done(); } catch(e){ toast(t.copyFail); }
+    document.body.removeChild(ta);
+  }
+});
+/* ================= Print report (PDF) ================= */
+function buildPrintReport(){
+  var t=T(), res=calc(), rows=res.rows, tot=res.tot;
+  var dateStr=new Date().toLocaleDateString(lang==="zh"?"zh-TW":lang==="ja"?"ja-JP":"en-US",{year:"numeric",month:"long",day:"numeric"});
+  var scenLbl = scenario===0.7 ? t.scenCons : (scenario===1.15 ? t.scenOpt : t.scenBase);
+  function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;"); }
+  var H="";
+  H+='<div class="pr-header"><p class="pr-kicker">'+esc(t.kicker)+'</p><h1 class="pr-title">'+esc(t.repTitle)+'</h1>'+
+     '<div class="pr-meta"><span>'+esc(t.repGen)+': <strong>'+esc(dateStr)+'</strong></span>'+
+     '<span>'+esc(t.currency)+': <strong>'+currency+'</strong></span>'+
+     '<span>'+esc(t.scenario)+': <strong>'+esc(scenLbl)+'</strong></span></div></div>';
+  // Business profile
+  H+='<div class="pr-section"><h2>'+esc(t.repProfile)+'</h2><div class="pr-profile">'+
+     '<div><span class="k">'+esc(t.repInd)+'</span><span class="v">'+esc($("industry").selectedOptions[0].textContent)+'</span></div>'+
+     '<div><span class="k">'+esc(t.repTeam)+'</span><span class="v">'+esc($("teamSize").selectedOptions[0].textContent)+'</span></div>'+
+     '<div><span class="k">'+esc(t.repRev)+'</span><span class="v">'+esc($("revenue").selectedOptions[0].textContent)+'</span></div>'+
+     '<div><span class="k">'+esc(t.repPain)+'</span><span class="v">'+esc($("pain").selectedOptions[0].textContent)+'</span></div>'+
+     '<div class="pr-wide"><span class="k">'+esc(t.repExistingAI)+'</span><span class="v">'+esc($("existingAI").selectedOptions[0].textContent)+'</span></div>'+
+     '</div></div>';
+  if(hasAI()){
+    H+='<div class="pr-section"><h2>'+esc(t.aiNoteTitle)+'</h2><div class="pr-note"><ul><li>'+esc(t.aiNoteBody.replace("{tool}", aiToolName()))+'</li><li>'+esc(t.repAiNote)+'</li></ul></div></div>';
+  }
+  // Totals
+  var has=rows.length>0;
+  H+='<div class="pr-section"><h2>'+esc(t.repTotals)+'</h2><div class="pr-kpis">'+
+     '<div class="pr-kpi feature"><span class="k">'+esc(t.repNetMo)+'</span><span class="v">'+(has?moneyFor(tot.net):"—")+'</span></div>'+
+     '<div class="pr-kpi"><span class="k">'+esc(t.repNetYr)+'</span><span class="v">'+(has?moneyFor(tot.net*12):"—")+'</span></div>'+
+     '<div class="pr-kpi"><span class="k">'+esc(t.repHours)+'</span><span class="v">'+(has?fmtH(tot.hours):"—")+'</span></div>'+
+     '<div class="pr-kpi"><span class="k">'+esc(t.sumPayback)+'</span><span class="v">'+(has?paybackText(tot.payback):"—")+'</span></div>'+
+     '</div></div>';
+  // Ranked use cases
+  H+='<div class="pr-section"><h2>'+esc(t.repRanked)+'</h2>';
+  if(!has){
+    H+='<div class="pr-empty">'+esc(t.repNone)+'</div>';
+  } else {
+    H+='<table class="pr-table"><thead><tr><th>'+esc(t.resultsH)+'</th><th>'+esc(t.repHoursSaved)+'</th><th>'+esc(t.repMoneySaved)+'</th><th>'+esc(t.repTool)+'</th><th>'+esc(t.repNet)+'</th><th>'+esc(t.roiLbl)+'</th><th>'+esc(t.repPb)+'</th></tr></thead><tbody>';
+    rows.forEach(function(r,i){
+      H+='<tr'+(i===0?' class="pr-first"':"")+'><td><span class="pr-uc"><span class="pr-rank">'+(i+1)+'</span>'+esc(t.proc[r.p.id].n)+
+         '<span class="pr-setup">'+esc(t.repSetup)+': '+moneyFor(r.p.setup[0])+' – '+moneyFor(r.p.setup[1])+'</span></span></td>'+
+         '<td>'+fmtH(r.hoursSaved)+'</td><td>'+moneyFor(r.moneySaved)+'</td>'+
+         '<td>'+moneyFor(r.p.tool[0])+' – '+moneyFor(r.p.tool[1])+'</td>'+
+         '<td class="pr-net">'+moneyFor(r.net)+'</td><td>'+Math.round(r.roi*100)+'%</td><td>'+paybackText(r.payback)+'</td></tr>';
+    });
+    H+='</tbody></table>';
+  }
+  H+='</div>';
+  // Roadmap
+  function names(list){ return list.map(function(r){ return t.proc[r.p.id].n; }).join(" · "); }
+  var f1 = rows.length? t.focusWith.replace("{name}", t.proc[rows[0].p.id].n) : t.focusNone;
+  var f2 = rows.length>1? t.focusAgent.replace("{name}", t.proc[rows[1].p.id].n) : (rows.length? t.focusAgent.replace("{name}", t.proc[rows[0].p.id].n) : t.focusNone);
+  var f3 = rows.length>2? t.focusRest.replace("{names}", names(rows.slice(2))) : (rows.length? t.focusRest.replace("{names}", names(rows)) : t.focusNone);
+  function prPhase(cls, when, title, focus, steps, metric){
+    return '<div class="pr-phase '+cls+'"><div class="when">'+esc(when)+'</div><h3>'+esc(title)+'</h3><div class="focus">'+esc(focus)+'</div><ul>'+
+      steps.map(function(s){ return "<li>"+esc(s)+"</li>"; }).join("")+'</ul><div class="metric">'+esc(metric)+'</div></div>';
+  }
+  H+='<div class="pr-section"><h2>'+esc(t.repRoad)+'</h2><div class="pr-road">'+
+     prPhase("p1", t.ph1when, t.ph1title, f1, t.ph1steps, t.ph1metric)+
+     prPhase("p2", t.ph2when, t.ph2title, f2, t.ph2steps, t.ph2metric)+
+     prPhase("p3", t.ph3when, t.ph3title, f3, t.ph3steps, t.ph3metric)+
+     '</div></div>';
+  // Honesty note
+  H+='<div class="pr-section"><h2>'+esc(t.honestH)+'</h2><div class="pr-note"><ul>'+
+     [t.honest1,t.honest2,t.honest3,t.honest4,t.honest5].map(function(s){ return "<li>"+esc(s)+"</li>"; }).join("")+
+     '</ul></div></div>';
+  H+='<p class="pr-foot">'+esc(t.repDisc)+'<br>'+esc(t.assumpNote)+'</p>';
+  $("printReport").innerHTML=H;
+}
+$("dlReport").addEventListener("click", function(){
+  var btn=this, t=T();
+  buildPrintReport();
+  var el=$("printReport");
+  if(!window.html2canvas || !window.jspdf || !window.jspdf.jsPDF){ toast(t.pdfFail); return; }
+  btn.disabled=true;
+  el.classList.add("capture");
+  window.html2canvas(el, {scale:2, backgroundColor:"#FFFFFF", logging:false}).then(function(canvas){
+    el.classList.remove("capture"); btn.disabled=false;
+    var pdf=new window.jspdf.jsPDF({unit:"mm", format:"a4", orientation:"portrait"});
+    var margin=12, pageW=210, pageH=297;
+    var imgW=pageW-margin*2, imgH=canvas.height*imgW/canvas.width;
+    var pageContent=pageH-margin*2;
+    var img=canvas.toDataURL("image/jpeg", 0.92);
+    var heightLeft=imgH, position=margin;
+    pdf.addImage(img, "JPEG", margin, position, imgW, imgH);
+    heightLeft-=pageContent;
+    while(heightLeft>0){
+      position=margin-(imgH-heightLeft);
+      pdf.addPage();
+      pdf.addImage(img, "JPEG", margin, position, imgW, imgH);
+      heightLeft-=pageContent;
+    }
+    pdf.save("ai-roi-report.pdf");
+  }).catch(function(){
+    el.classList.remove("capture"); btn.disabled=false; toast(t.pdfFail);
+  });
+});
+
+/* ================= Init ================= */
+fillStaticSelects();
+buildProcesses();
+compute();
+</script>
+</body>
+</html>
