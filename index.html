@@ -8,7 +8,7 @@
 <title>AI ROI Calculator for SMEs</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,500;8..60,600;8..60,700&family=Inter:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;600;700&family=Noto+Serif+TC:wght@500;600;700&family=Noto+Serif+JP:wght@500;600;700&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,500;8..60,600;8..60,700&family=Inter:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;600;700&family=Zen+Kaku+Gothic+New:wght@500;700&family=Noto+Serif+TC:wght@500;600;700&family=Noto+Serif+JP:wght@500;600;700&display=swap" rel="stylesheet" />
 <style>
 :root{
   --bg:#F7F9FB; --bg2:#EEF2F6; --surface:#FFFFFF; --surface2:#F1F5F9;
@@ -40,9 +40,25 @@ html,body{max-width:100%;overflow-x:hidden;overflow-x:clip}
 html{scroll-behavior:smooth}
 @media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto} *{transition:none!important;animation:none!important} }
 body{margin:0;background:linear-gradient(180deg,var(--bg) 0%,var(--bg2) 100%);color:var(--ink);
-  font-family:var(--font-body);font-size:16px;line-height:1.6;letter-spacing:-.008em;font-feature-settings:"kern" 1,"liga" 1,"calt" 1;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+  font-family:var(--font-body);font-size:16px;line-height:1.65;letter-spacing:-.006em;font-feature-settings:"kern" 1,"liga" 1,"calt" 1;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
 h1,h2,h3,.serif{font-family:var(--font-display);font-weight:600;letter-spacing:-.008em;line-height:1.18;font-optical-sizing:auto;font-feature-settings:"kern" 1,"liga" 1}
 .kpi .v,.sum-row .v,.proc-potential .big,.rank-roi,.rstat .v,.proc-live strong,.input-wrap input{font-variant-numeric:tabular-nums lining-nums}
+
+/* ---------- Per-language typography: reading comfort ---------- */
+/* 繁體中文 — Noto Sans TC / Noto Serif TC lead; Han glyphs read best with looser leading and a touch of positive tracking (never the negative tracking used for Latin) */
+html[lang="zh-Hant"]{--font-body:"Noto Sans TC","Inter","Noto Sans JP",system-ui,-apple-system,"Segoe UI",sans-serif;--font-display:"Noto Serif TC","Source Serif 4","Noto Serif JP",Georgia,serif}
+html[lang="zh-Hant"] body{line-height:1.85;letter-spacing:.025em}
+html[lang="zh-Hant"] h1,html[lang="zh-Hant"] h2,html[lang="zh-Hant"] h3,html[lang="zh-Hant"] .serif{line-height:1.4;letter-spacing:.02em}
+html[lang="zh-Hant"] .hero h1{line-height:1.32}
+html[lang="zh-Hant"] .hero p,html[lang="zh-Hant"] .card .sub,html[lang="zh-Hant"] .section-head p{line-height:1.9}
+html[lang="zh-Hant"] .proc-desc,html[lang="zh-Hant"] .field .hint,html[lang="zh-Hant"] .phase li,html[lang="zh-Hant"] .panel li{line-height:1.75}
+/* 日本語 — Zen Kaku Gothic New / Noto Sans JP lead, Noto Serif JP headings; kana + kanji need the same breathing room */
+html[lang="ja"]{--font-body:"Zen Kaku Gothic New","Noto Sans JP","Inter",system-ui,-apple-system,"Segoe UI",sans-serif;--font-display:"Noto Serif JP","Source Serif 4","Noto Serif TC",Georgia,serif}
+html[lang="ja"] body{line-height:1.85;letter-spacing:.035em}
+html[lang="ja"] h1,html[lang="ja"] h2,html[lang="ja"] h3,html[lang="ja"] .serif{line-height:1.45;letter-spacing:.03em}
+html[lang="ja"] .hero h1{line-height:1.35}
+html[lang="ja"] .hero p,html[lang="ja"] .card .sub,html[lang="ja"] .section-head p{line-height:1.9}
+html[lang="ja"] .proc-desc,html[lang="ja"] .field .hint,html[lang="ja"] .phase li,html[lang="ja"] .panel li{line-height:1.75}
 button,[role="button"],select,summary,input:not([type="checkbox"]){min-height:2.25rem}
 button{font-family:inherit;cursor:pointer}
 .wrap{max-width:1120px;margin:0 auto;padding:0 20px 72px}
@@ -53,15 +69,15 @@ button{font-family:inherit;cursor:pointer}
 .brand-mark{width:34px;height:34px;border-radius:4px;background:var(--navy);color:var(--gold-bright);border-bottom:3px solid var(--gold);display:grid;place-items:center;flex:none}
 @media (prefers-color-scheme: dark){ .brand-mark{background:#1B4F72;color:#FFFFFF} }
 .brand small{display:block;font-family:var(--font-body);font-weight:500;color:var(--muted);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase}
-.controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-.lang-switch{display:flex;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:3px;box-shadow:var(--shadow)}
-.lang-switch button{border:0;background:transparent;color:var(--muted);font-size:.85rem;font-weight:600;padding:6px 14px;border-radius:999px;min-height:2.25rem}
+.controls{display:flex;align-items:center;gap:10px;flex-wrap:nowrap;min-width:0}
+.lang-switch{display:flex;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:3px;box-shadow:var(--shadow);width:216px;flex:none}
+.lang-switch button{border:0;background:transparent;color:var(--muted);font-size:.85rem;font-weight:600;padding:6px 4px;border-radius:999px;min-height:2.25rem;flex:1 1 0;min-width:0;text-align:center;white-space:nowrap}
 .lang-switch button.active{background:var(--navy);color:#FFFFFF}
 @media (prefers-color-scheme: dark){ .lang-switch button.active{background:#1B4F72} }
-.cur-wrap{display:flex;align-items:center;gap:7px;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:3px 6px 3px 14px;box-shadow:var(--shadow)}
-.cur-wrap label{font-size:.8rem;color:var(--muted);font-weight:600}
+.cur-wrap{display:flex;align-items:center;gap:7px;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:3px 6px 3px 14px;box-shadow:var(--shadow);width:236px;flex:none;min-width:0}
+.cur-wrap label{font-size:.8rem;color:var(--muted);font-weight:600;white-space:nowrap;flex:none}
 select{font-family:inherit;font-size:.95rem;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:8px 10px}
-.cur-wrap select{border:0;background:transparent;font-weight:700;color:var(--navy);padding:4px 2px;min-height:2.25rem}
+.cur-wrap select{border:0;background:transparent;font-weight:700;color:var(--navy);padding:4px 2px;min-height:2.25rem;flex:1 1 auto;min-width:0;width:100%}
 
 /* ---------- Hero — editorial ledger signature ---------- */
 .hero{padding:44px 0 8px;display:grid;grid-template-columns:1.15fr .85fr;gap:36px;align-items:center;border-bottom:3px double var(--gold);padding-bottom:30px}
@@ -83,8 +99,9 @@ select{font-family:inherit;font-size:.95rem;color:var(--ink);background:var(--su
 .gauge-scale{display:flex;justify-content:space-between;font-size:.65rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#93A1BE;max-width:260px;margin:10px auto 0;border-top:1px solid rgba(255,255,255,.16);padding-top:8px}
 .roi-score-badge{display:inline-flex;align-items:center;gap:8px;margin-top:14px;background:var(--gold);color:#0B1D33;font-weight:800;font-size:.82rem;padding:7px 14px;border-radius:3px;letter-spacing:.02em}
 .roi-score-badge b{font-family:var(--font-display);font-size:1.15rem;line-height:1}
-.sample-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-.sample-label{font-size:.85rem;font-weight:700;color:var(--muted)}
+.sample-row{display:flex;gap:10px;flex-wrap:nowrap;align-items:stretch}
+.sample-label{font-size:.85rem;font-weight:700;color:var(--muted);flex:none;white-space:nowrap;align-self:center}
+.sample-row .btn{flex:1 1 0;min-width:0;display:flex;align-items:center;justify-content:center}
 .btn{border:1px solid var(--navy);background:var(--navy);color:#FFFFFF;font-weight:700;font-size:.95rem;padding:10px 20px;border-radius:8px;transition:transform .12s ease, box-shadow .12s ease;box-shadow:var(--shadow)}
 .btn:hover{transform:translateY(-1px);box-shadow:var(--shadow-lg)}
 .btn.ghost{background:var(--surface);color:var(--navy);border-color:var(--line)}
@@ -266,7 +283,14 @@ footer{margin-top:44px;padding-top:20px;border-top:1px solid var(--line);color:v
 @media (max-width:640px){
   .wrap{padding:0 14px 56px}
   .topbar{gap:8px}
-  .controls{width:100%;justify-content:flex-start}
+  /* Header controls: one row, same split in every language — currency flexes, language switcher flexes, neither wraps */
+  .controls{width:100%;display:grid;grid-template-columns:minmax(0,44fr) minmax(0,56fr);gap:10px}
+  .cur-wrap{width:auto}
+  .lang-switch{width:auto}
+  /* Sample buttons: label on its own line, two equal-width buttons side by side in every language */
+  .sample-row{flex-wrap:wrap;align-items:stretch}
+  .sample-label{flex:1 1 100%}
+  .sample-row .btn{display:flex;align-items:center;justify-content:center}
   .hero{padding-top:30px;gap:24px}
   .steps-nav{margin:22px 0 18px}
   .step-chip{padding:8px 10px 8px 6px;font-size:.82rem;gap:7px}
@@ -320,7 +344,10 @@ footer{margin-top:44px;padding-top:20px;border-top:1px solid var(--line);color:v
 @media (max-width:380px){
   .proc-potential{padding-left:0}
   .kpi .v{font-size:1.32rem}
-  .lang-switch button{padding:6px 10px}
+  .lang-switch button{padding:6px 2px;font-size:.8rem}
+  .cur-wrap{padding-left:11px}
+  .cur-wrap label{font-size:.76rem}
+  .cur-wrap select{font-size:.88rem}
 }
 
 /* ---------- Print report (PDF) ---------- */
