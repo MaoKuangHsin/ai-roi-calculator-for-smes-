@@ -36,6 +36,7 @@
   }
 }
 *{box-sizing:border-box}
+html,body{max-width:100%;overflow-x:hidden;overflow-x:clip}
 html{scroll-behavior:smooth}
 @media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto} *{transition:none!important;animation:none!important} }
 body{margin:0;background:linear-gradient(180deg,var(--bg) 0%,var(--bg2) 100%);color:var(--ink);
@@ -123,15 +124,17 @@ select{font-family:inherit;font-size:.95rem;color:var(--ink);background:var(--su
 /* Step 2 processes */
 .proc{border:1px solid var(--line-soft);border-radius:10px;padding:16px 18px;margin-bottom:12px;background:var(--surface2);transition:border-color .15s ease, background .15s ease}
 .proc.selected{border-color:var(--navy);background:var(--surface)}
-.proc-head{display:flex;gap:13px;align-items:flex-start;cursor:pointer;min-height:2.25rem}
+.proc-head{display:flex;gap:13px;align-items:flex-start;cursor:pointer;min-height:2.25rem;min-width:0}
+.proc-head>*{min-width:0}
+.proc-head>span:nth-child(3){flex:1 1 auto;min-width:0;overflow-wrap:break-word}
 .proc-check{width:24px;height:24px;border-radius:7px;border:2px solid var(--line);flex:none;display:grid;place-items:center;margin-top:2px;background:var(--surface);color:transparent;transition:all .12s}
 .proc.selected .proc-check{background:var(--navy);border-color:var(--navy);color:#FFFFFF}
 .proc-icon{width:40px;height:40px;border-radius:8px;background:var(--accent-soft);color:var(--accent-ink);display:grid;place-items:center;flex:none}
 .proc-title{font-weight:700;font-size:1.02rem;line-height:1.3}
 .proc-desc{font-size:.86rem;color:var(--muted);margin-top:2px}
-.proc-potential{margin-left:auto;text-align:right;flex:none}
+.proc-potential{margin-left:auto;text-align:right;flex:0 1 auto;min-width:0;max-width:9.5rem}
 .proc-potential .big{font-family:var(--font-display);letter-spacing:-.01em;font-size:1.45rem;font-weight:600;color:var(--navy);line-height:1;font-optical-sizing:auto}
-.proc-potential .lbl{font-size:.68rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.proc-potential .lbl{font-size:.68rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);overflow-wrap:break-word;line-height:1.45}
 .proc-inputs{display:none;grid-template-columns:1fr 1fr auto;gap:14px;margin-top:16px;padding-top:16px;border-top:1px dashed var(--line)}
 .proc.selected .proc-inputs{display:grid}
 @media (max-width:560px){ .proc-inputs{grid-template-columns:1fr 1fr} .proc-live{grid-column:1/-1} }
@@ -255,6 +258,70 @@ input[type=number]::-webkit-inner-spin-button{opacity:.4}
 .toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);background:var(--navy-deep);color:#FFFFFF;padding:11px 20px;border-radius:999px;font-weight:600;font-size:.9rem;opacity:0;pointer-events:none;transition:all .25s ease;box-shadow:var(--shadow-lg);z-index:50}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 footer{margin-top:44px;padding-top:20px;border-top:1px solid var(--line);color:var(--muted);font-size:.82rem;display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
+
+/* ---------- Mobile: fit the phone width, no horizontal overflow ---------- */
+.input-wrap input{min-width:0}
+.kpi,.rstat,.phase,.panel,.rank-card,.sum-row>*{min-width:0}
+.assump-table th,.assump-table td{overflow-wrap:break-word}
+@media (max-width:640px){
+  .wrap{padding:0 14px 56px}
+  .topbar{gap:8px}
+  .controls{width:100%;justify-content:flex-start}
+  .hero{padding-top:30px;gap:24px}
+  .steps-nav{margin:22px 0 18px}
+  .step-chip{padding:8px 10px 8px 6px;font-size:.82rem;gap:7px}
+  .step-chip .n{font-size:1.3rem}
+  .card{padding:20px 16px}
+  .card .sub{max-width:100%}
+  .big-num{font-size:3.4rem;right:10px}
+  .section-head .big-num{font-size:3.8rem}
+  /* Step 2 process cards: stack the % block onto its own row under the title */
+  .proc{padding:14px}
+  .proc-head{flex-wrap:wrap;row-gap:8px}
+  .proc-head>span:nth-child(3){flex:1 1 0}
+  .proc-potential{flex:1 1 100%;width:100%;max-width:none;margin-left:0;text-align:left;display:flex;align-items:baseline;gap:9px;padding-left:77px}
+  .proc-potential .big{flex:none}
+  .proc-potential .lbl{flex:1 1 auto}
+  .proc-inputs{gap:10px}
+  .proc-inputs>div{min-width:0}
+  /* Sticky summary + KPI tiles: let big numbers wrap instead of pushing out */
+  .summary{padding:20px 16px}
+  .sum-row{flex-wrap:wrap;row-gap:1px}
+  .sum-row .v{white-space:normal;overflow-wrap:anywhere;font-size:1.22rem}
+  .sum-row.hero-row .v{font-size:1.75rem}
+  .seg button{white-space:normal;line-height:1.3}
+  .kpis{gap:10px}
+  .kpi{padding:14px}
+  .kpi .v{font-size:1.5rem;overflow-wrap:anywhere}
+  .score-strip{gap:10px;padding:14px}
+  .score-strip .score-note{margin-left:0;max-width:100%;flex:1 1 100%}
+  /* Ranked results */
+  .rank-card{padding:16px;gap:4px 12px}
+  .rank-card.first{padding:20px 16px}
+  .rank-badge{width:46px;height:46px}
+  .rank-badge .rn{font-size:1.5rem}
+  .rank-card.first .rank-badge{width:56px;height:56px}
+  .rank-card.first .rank-badge .rn{font-size:2rem}
+  .rank-top{gap:4px 10px}
+  .rank-roi{white-space:normal;overflow-wrap:anywhere;font-size:1.2rem}
+  .rank-card.first .rank-roi{font-size:1.5rem}
+  .first-tag{margin-left:6px}
+  .rank-stats{gap:8px}
+  .rstat .v{overflow-wrap:anywhere}
+  /* Panels, assumptions table, roadmap */
+  .panel{padding:18px 16px}
+  .assump-table{font-size:.8rem}
+  .assump-table th,.assump-table td{padding:7px 6px 7px 0}
+  .phase{padding:18px 16px}
+  .report-actions .btn{flex:1 1 auto;text-align:center}
+  .toast{max-width:calc(100vw - 28px);text-align:center}
+  footer{gap:6px}
+}
+@media (max-width:380px){
+  .proc-potential{padding-left:0}
+  .kpi .v{font-size:1.32rem}
+  .lang-switch button{padding:6px 10px}
+}
 
 /* ---------- Print report (PDF) ---------- */
 #printReport{display:none;color:#0F1C2E;font-family:var(--font-body);line-height:1.5;background:#FFFFFF}
