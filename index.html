@@ -274,7 +274,9 @@ input[type=number]::-webkit-inner-spin-button{opacity:.4}
 .report-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px;align-items:center}
 .toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);background:var(--navy-deep);color:#FFFFFF;padding:11px 20px;border-radius:999px;font-weight:600;font-size:.9rem;opacity:0;pointer-events:none;transition:all .25s ease;box-shadow:var(--shadow-lg);z-index:50}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-footer{margin-top:44px;padding-top:20px;border-top:1px solid var(--line);color:var(--muted);font-size:.82rem;display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
+footer{margin-top:44px;padding-top:20px;border-top:1px solid var(--line);color:var(--muted);font-size:.82rem}
+.foot-main{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.foot-credit{margin-top:16px;padding-top:16px;border-top:1px solid var(--line-soft);text-align:center;font-size:.8rem;line-height:1.6;letter-spacing:.015em;color:var(--muted)}
 
 /* ---------- Mobile: fit the phone width, no horizontal overflow ---------- */
 .input-wrap input{min-width:0}
@@ -339,7 +341,8 @@ footer{margin-top:44px;padding-top:20px;border-top:1px solid var(--line);color:v
   .phase{padding:18px 16px}
   .report-actions .btn{flex:1 1 auto;text-align:center}
   .toast{max-width:calc(100vw - 28px);text-align:center}
-  footer{gap:6px}
+  .foot-main{gap:6px}
+  .foot-credit{margin-top:12px;padding-top:12px;font-size:.78rem}
 }
 @media (max-width:380px){
   .proc-potential{padding-left:0}
@@ -600,8 +603,11 @@ footer{margin-top:44px;padding-top:20px;border-top:1px solid var(--line);color:v
   </div>
 
   <footer>
-    <span data-i="footL">AI ROI Calculator for SMEs — runs entirely in your browser. No account, no data leaves this page.</span>
-    <span data-i="footR">Estimates only. Verify vendor pricing before purchasing.</span>
+    <div class="foot-main">
+      <span data-i="footL">AI ROI Calculator for SMEs — runs entirely in your browser. No account, no data leaves this page.</span>
+      <span data-i="footR">Estimates only. Verify vendor pricing before purchasing.</span>
+    </div>
+    <div class="foot-credit"><span data-i="footCredit">© 2026 Cindy Mao. All Rights Reserved.</span></div>
   </footer>
 </div>
 
@@ -687,6 +693,7 @@ en:{ brandSub:"For small & medium businesses", currency:"Currency", kicker:"AI a
   assumpNote:"One month = 4.33 weeks. Tool and one-time setup costs use the mid-point of the estimate range shown for each process; payback = setup estimate ÷ net monthly saving.",
   copyBtn:"Copy report", dlBtn:"Download PDF", reportNote:"A plain-language summary you can share with a partner, manager or investor.",
   footL:"AI ROI Calculator for SMEs — runs entirely in your browser. No account, no data leaves this page.", footR:"Estimates only. Verify vendor pricing before purchasing.",
+  footCredit:"© 2026 Cindy Mao. All Rights Reserved.",
   copied:"Report copied to clipboard", copyFail:"Copy failed — use Download instead", pdfFail:"PDF could not be generated — please try Copy report instead",
   proc:{ support:{n:"Customer service replies",d:"Answering repeat questions, order status, FAQs across chat, email and social."},
     quoting:{n:"Quoting & invoicing",d:"Drafting quotes, invoices, payment reminders and chasing paperwork."},
@@ -753,6 +760,7 @@ zh:{ brandSub:"為中小企業而設", currency:"幣別", kicker:"用清楚的�
   assumpNote:"一個月以 4.33 週計算。工具與一次性建置成本取各流程估計區間的中間值；回本期 = 建置估計 ÷ 每月淨省。",
   copyBtn:"複製報告", dlBtn:"下載 PDF", reportNote:"一份白話摘要，可以分享給合夥人、主管或投資人。",
   footL:"中小企業 AI ROI 試算器——完全在你的瀏覽器中運行。不用帳號，資料不離開這個頁面。", footR:"僅為估算。購買前請確認廠商定價。",
+  footCredit:"© 2026 Cindy Mao. 版權所有。",
   copied:"報告已複製到剪貼簿", copyFail:"複製失敗——請改用下載", pdfFail:"PDF 產生失敗——請改用複製報告",
   proc:{ support:{n:"客服回覆",d:"回答重複問題、訂單進度、常見問題——橫跨聊天、Email 和社群。"},
     quoting:{n:"報價與開立發票",d:"撰寫報價單、發票、付款提醒，以及追蹤文件。"},
@@ -819,6 +827,7 @@ ja:{ brandSub:"中小企業のための", currency:"通貨", kicker:"AI導入を
   assumpNote:"1か月 = 4.33週として計算。ツール費用と初期費用は各業務の見積もり範囲の中間値を使用；回収期間 = 初期費用 ÷ 月あたり純節約。",
   copyBtn:"レポートをコピー", dlBtn:"PDFをダウンロード", reportNote:"パートナーや上司、投資家に共有できる、平易な言葉の要約です。",
   footL:"中小企業のためのAI ROI計算ツール——すべてブラウザ内で動作。アカウント不要、データはこのページから出ません。", footR:"あくまで試算です。購入前に業者の価格を確認してください。",
+  footCredit:"© 2026 Cindy Mao. 著作権所有。",
   copied:"レポートをクリップボードにコピーしました", copyFail:"コピーに失敗しました——ダウンロードをご利用ください", pdfFail:"PDFを生成できませんでした——レポートのコピーをお試しください",
   proc:{ support:{n:"カスタマー対応の返信",d:"よくある質問、注文状況、FAQへの回答——チャット、メール、SNSを通じて。"},
     quoting:{n:"見積もり・請求",d:"見積書、請求書、支払いリマインドの作成と書類のフォロー。"},
